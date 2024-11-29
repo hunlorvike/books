@@ -120,7 +120,7 @@ const BookDetailComponent = {
                     >
                         <button 
                             class="text-left font-medium hover:underline flex-1"
-                            @click="goToPage(item.pageIndex)"
+                            @click="currentPage = item.pageIndex"
                         >
                             {{ item.title }}
                         </button>

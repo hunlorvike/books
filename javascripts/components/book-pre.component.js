@@ -21,12 +21,13 @@ const BookPreviewComponent = {
                 <div class="rounded-2xl shadow-lg overflow-hidden">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 xs:gap-6 lg:gap-8 p-2 xs:p-4 sm:p-8">
                         <div class="col-span-12 lg:col-span-5 flex justify-center items-center">
-                            <img 
-                                src="./public/images/covers/anh_bia_cndl1.png" 
-                                alt="Book Image" 
-                                class="max-h-40 xs:max-h-60 sm:max-h-80 w-auto rounded-lg shadow-md object-cover
-                                    sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
-                            >
+                            <a data-fancybox="gallery" href="./public/images/covers/anh_bia_cndl1.png">
+                                <img 
+                                    src="./public/images/covers/anh_bia_cndl1.png" 
+                                    alt="Book Image" 
+                                    class="max-h-40 xs:max-h-60 sm:max-h-80 w-auto rounded-lg shadow-md object-cover sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
+                                >
+                            </a>
                         </div>
 
                         <div class="col-span-12 lg:col-span-7 space-y-2 xs:space-y-4 sm:space-y-6">
@@ -163,6 +164,14 @@ const BookPreviewComponent = {
 
     mounted() {
         window.addEventListener("resize", this.checkScreenSize);
+
+        Fancybox.bind("[data-fancybox]", {
+            Toolbar: true,
+            Thumbs: false,
+            Image: {
+                zoom: true
+            },    
+        });    
     },
 
     beforeDestroy() {
