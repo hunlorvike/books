@@ -1,4 +1,37 @@
-const pages = [
+const BOOK_RELATEDS = [
+	{ id: 1, image: "./public/images/relateds/related1.jpg" },
+	{ id: 2, image: "./public/images/relateds/related2.jpg" },
+	{ id: 3, image: "./public/images/relateds/related3.jpg" },
+	{ id: 4, image: "./public/images/relateds/related5.jpg" },
+]
+
+const FONT_OPTIONS = [
+	{ value: 'Arial', label: 'Arial' },
+	{ value: 'Tahoma', label: 'Tahoma' },
+	{ value: 'Verdana', label: 'Verdana' },
+	{ value: 'Roboto', label: 'Roboto' },
+	{ value: 'Open Sans', label: 'Open Sans' },
+	{ value: 'Noto Sans', label: 'Noto Sans' },
+];
+
+const THEME_OPTIONS = [
+	{ value: 'default', label: 'Mặc định' },
+	{ value: 'light', label: 'Trắng' },
+	{ value: 'black', label: 'Đen' },
+];
+
+const HIGHLIGHT_COLORS = [
+	'#FFFF00', '#90EE90', '#FFA500', '#ADD8E6'
+];
+
+const SONG_OPTIONS = [
+	{ name: 'Nhạc 1', url: './public/audios/audio1.mp3' },
+	{ name: 'Nhạc 2', url: './public/audios/audio2.mp3' },
+	{ name: 'Nhạc 3', url: './public/audios/audio3.mp3' },
+	{ name: 'Nhạc 4', url: './public/audios/audio4.mp3' },
+]
+
+const PAGES = [
 	// Trang 1: Ảnh bìa
 	{
 		title: 'Trang bìa',
@@ -127,4 +160,4 @@ const pages = [
 	}
 ];
 
-export { pages };
+export { BOOK_RELATEDS, PAGES, FONT_OPTIONS, THEME_OPTIONS, HIGHLIGHT_COLORS, SONG_OPTIONS };

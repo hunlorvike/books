@@ -1,3 +1,5 @@
+import { BOOK_RELATEDS } from '../core/const.js';
+
 const BookPreviewComponent = {
     name: "BookPreviewComponent",
 
@@ -105,7 +107,7 @@ const BookPreviewComponent = {
                     <h2 class="text-base xs:text-lg sm:text-2xl text-center font-bold mb-4 xs:mb-8 text-gray-900">SÁCH CÙNG THỂ LOẠI</h2>
                     <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 xs:gap-6">
                         <div 
-                            v-for="book in books" 
+                            v-for="book in BOOK_RELATEDS" 
                             :key="book.id" 
                             class="flex flex-col items-center p-2 xs:p-4 bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transform transition duration-300 ease-in-out hover:shadow-xl hover:scale-105">
                             <img 
@@ -146,13 +148,7 @@ const BookPreviewComponent = {
                 <br><br>
                 Không chỉ là một hành trình du lịch, mà còn là một cơ hội để hiểu thêm về văn hóa, con người Huế. Hãy để Huế trở thành một phần của trái tim bạn qua từng trang sách và từng bước chân trên mảnh đất cổ đ này.
             `,
-            books: [
-                { id: 1, image: "./public/images/relateds/related1.jpg" },
-                { id: 2, image: "./public/images/relateds/related2.jpg" },
-                { id: 3, image: "./public/images/relateds/related3.jpg" },
-                { id: 4, image: "./public/images/relateds/related4.jpg" },
-                { id: 5, image: "./public/images/relateds/related5.jpg" },
-            ],
+            BOOK_RELATEDS
         };
     },
 

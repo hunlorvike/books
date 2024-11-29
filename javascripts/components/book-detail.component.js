@@ -1,4 +1,4 @@
-import { pages } from '../core/const.js';
+import { PAGES, FONT_OPTIONS, THEME_OPTIONS, HIGHLIGHT_COLORS, SONG_OPTIONS } from '../core/const.js';
 import { highlightDB } from '../core/db.js';
 
 const BookDetailComponent = {
@@ -21,6 +21,14 @@ const BookDetailComponent = {
 							@click="toggleFullScreen"
 						>
 							<i class="fas fa-expand"></i>
+						</button>
+
+						<!-- Music Button -->
+						<button 
+							class="p-2 sm:p-3 rounded-lg transition duration-300 shadow-md"
+							@click="toggleMenu('musicModal')"
+						>
+							<i class="fas fa-music"></i>
 						</button>
 
 						<!-- Settings Button -->
@@ -57,7 +65,7 @@ const BookDetailComponent = {
 				@touchmove="handleTouchMove"
 			>
 				<!-- Content Section -->
-				<section class="p-4 w-full flex-grow flex items-center justify-center relative">
+				<section class="p-4 w-full flex-grow flex sm:items-center justify-center relative">
 					<div ref="contentRef" class="flex justify-center text-[0.875em] sm:text-[1em] leading-relaxed" v-html="highlightedContent"></div>
 
 					<!-- Navigation Buttons -->
@@ -71,7 +79,7 @@ const BookDetailComponent = {
 
 					<button 
 						@click="navigatePage('next')" 
-						:disabled="currentPage === pages.length - 1" 
+						:disabled="currentPage === PAGES.length - 1" 
 						class="hidden sm:flex items-center justify-center w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 border-2 rounded-full shadow-md fixed right-4 top-1/2 transform -translate-y-1/2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						<i class="fas fa-chevron-right text-lg md:text-xl lg:text-2xl"></i>
@@ -124,6 +132,91 @@ const BookDetailComponent = {
                     </li>
                 </ul>
             </div>
+
+			<!-- Music Modal -->
+			<div
+				v-if="isMusicModalOpen"
+				class="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50"
+				@click.self="closeMenu('musicModal')"
+			>
+				<div class="relative w-96 p-6 rounded-2xl shadow-xl bg-white" @click.stop>
+					<div class="flex flex-col space-y-4">
+
+						<!-- Currently Playing -->
+						<div class="text-center">
+							<h3 class="font-medium text-lg">{{ currentSong ? currentSong.name : 'Chọn bài hát' }}</h3>
+						</div>
+
+						<!-- Player Controls -->
+						<div class="flex justify-center items-center space-x-6">
+							<button class="text-gray-400 hover:text-gray-600 transition-all" @click="previousSong">
+								<i class="fas fa-step-backward"></i>
+							</button>
+							<button class="w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all" @click="togglePlay">
+								<i :class="['fas', isPlaying ? 'fa-pause' : 'fa-play']"></i>
+							</button>
+							<button class="text-gray-400 hover:text-gray-600 transition-all" @click="nextSong">
+								<i class="fas fa-step-forward"></i>
+							</button>
+						</div>
+
+						<!-- Progress Bar -->
+						<div class="w-full">
+							<div 
+								class="relative w-full h-1 bg-gray-200 rounded-full cursor-pointer"
+								@click="seekToPosition($event)"
+							>
+								<div 
+									class="absolute left-0 top-0 h-full bg-gray-500 rounded-full"
+									:style="{ width: progress + '%' }"
+								></div>
+							</div>
+							<div class="flex justify-between mt-1 text-sm text-gray-500">
+								<span>{{ formatTime(currentTime) }}</span>
+								<span>{{ formatTime(duration) }}</span>
+							</div>
+						</div>
+
+						<!-- Song List -->
+						<div class="mt-6 space-y-1 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+							<div 
+								v-for="(song, index) in SONG_OPTIONS" 
+								:key="index"
+								class="group flex items-center justify-between p-3 rounded-xl transition-all cursor-pointer"
+								:class="[
+									currentSongIndex === index 
+									? 'bg-gray-50 text-gray-700' 
+									: 'hover:bg-gray-50 text-gray-700'
+								]"
+								@click="playSong(song, index)"
+							>
+								<div class="flex items-center space-x-3">
+									<div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
+										<i 
+											:class="[
+											'fas',
+											'text-gray-500',
+											currentSongIndex === index 
+												? 'fa-volume-up ' 
+												: 'fa-music'
+											]"
+										></i>
+									</div>
+									<span 
+										class="font-medium transition-colors"
+										:class="['text-gray-700',]"
+									>
+										{{ song.name }}
+									</span>
+								</div>
+								<div class="opacity-0 group-hover:opacity-100 transition-opacity">
+									<i class="fas fa-play text-sm"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
     
 			<!-- Settings Modal -->
 			<div v-if="isSettingsModalOpen" class="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50" @click.self="closeMenu('settingsModal')">
@@ -141,7 +234,7 @@ const BookDetailComponent = {
 						<label class="block text-sm font-medium mb-2">Phông chữ</label>
 						<div class="relative inline-block w-full">
 							<select v-model="settings.fontFamily" class="block w-full px-4 py-2 pr-10 text-gray-800 bg-gray-100 border border-gray-300 rounded-lg">
-								<option v-for="font in fontOptions" :key="font.value" :value="font.value">
+								<option v-for="font in FONT_OPTIONS" :key="font.value" :value="font.value">
 									{{ font.label }}
 								</option>
 							</select>
@@ -152,7 +245,7 @@ const BookDetailComponent = {
 					<div class="mb-5">
 						<label class="block text-sm font-medium mb-2">Màu nền</label>
 						<select v-model="settings.theme" class="block w-full px-4 py-2 text-gray-800 bg-gray-100 border border-gray-300 rounded-lg">
-							<option v-for="theme in themeOptions" :key="theme.value" :value="theme.value">
+							<option v-for="theme in THEME_OPTIONS" :key="theme.value" :value="theme.value">
 								{{ theme.label }}
 							</option>
 						</select>
@@ -194,7 +287,7 @@ const BookDetailComponent = {
 			<!-- Context Menu -->
 			<div v-if="contextMenu.visible" class="absolute z-50 bg-white shadow-lg rounded-lg p-2 flex space-x-2" :style="{ top: contextMenu.y + 'px', left: contextMenu.x + 'px' }">
 				<button 
-					v-for="color in highlightColors" 
+					v-for="color in HIGHLIGHT_COLORS" 
 					:key="color" 
 					@click="addHighlight(color)" 
 					class="w-10 h-10 rounded border border-gray-300 shadow hover:shadow-md" 
@@ -214,15 +307,8 @@ const BookDetailComponent = {
 				y: 0,
 			},
 			dropdownOpen: false,
-			fontOptions: [
-				{ value: 'Arial', label: 'Arial' },
-				{ value: 'Tahoma', label: 'Tahoma' },
-				{ value: 'Verdana', label: 'Verdana' },
-				{ value: 'Roboto', label: 'Roboto' },
-				{ value: 'Open Sans', label: 'Open Sans' },
-				{ value: 'Noto Sans', label: 'Noto Sans' },
-			],
-			highlightColors: ['#FFFF00', '#90EE90', '#FFA500', '#ADD8E6'],
+			FONT_OPTIONS,
+			HIGHLIGHT_COLORS,
 			highlightText: {
 				id: '',
 				content: '',
@@ -235,14 +321,19 @@ const BookDetailComponent = {
 			isSettingsModalOpen: false,
 			isTableOfContentsOpen: false,
 			openChapters: {},
-			pages,
+			PAGES,
 			currentPage: 0,
 			showBookmarkedOnly: false,
-			themeOptions: [
-				{ value: 'default', label: 'Mặc định' },
-				{ value: 'light', label: 'Trắng' },
-				{ value: 'black', label: 'Đen' },
-			],
+			THEME_OPTIONS,
+			isMusicModalOpen: false,
+			SONG_OPTIONS,
+			audioPlayer: null,
+			currentSong: null,
+			currentSongIndex: -1,
+			isPlaying: false,
+			currentTime: 0,
+			duration: 0,
+			progress: 0,
 		};
 	},
 
@@ -250,22 +341,25 @@ const BookDetailComponent = {
 		settings() {
 			return this.$store.getters.theme;
 		},
+
 		filteredTableOfContents() {
 			return this.showBookmarkedOnly
-				? this.pages.filter((page, index) => this.bookmarks.includes(index)).map((page, index) => ({
+				? this.PAGES.filter((page, index) => this.bookmarks.includes(index)).map((page, index) => ({
 					title: page.title,
 					pageIndex: index
 				}))
-				: this.pages.map((page, index) => ({
+				: this.PAGES.map((page, index) => ({
 					title: page.title,
 					pageIndex: index
 				}));
 		},
+
 		isBookmarked() {
 			return this.bookmarks.includes(this.currentPage);
 		},
+
 		highlightedContent() {
-			return this.applyHighlights(this.pages[this.currentPage].content);
+			return this.applyHighlights(this.PAGES[this.currentPage].content);
 		},
 	},
 
@@ -277,19 +371,23 @@ const BookDetailComponent = {
 				document.exitFullscreen();
 			}
 		},
+
 		toggleMenu(menu) {
 			this[`is${this.capitalize(menu)}Open`] = !this[`is${this.capitalize(menu)}Open`];
 		},
+
 		closeMenu(menu) {
 			this[`is${this.capitalize(menu)}Open`] = false;
 		},
+
 		navigatePage(direction) {
-			if (direction === 'next' && this.currentPage < this.pages.length - 1) {
+			if (direction === 'next' && this.currentPage < this.PAGES.length - 1) {
 				this.currentPage++;
 			} else if (direction === 'previous' && this.currentPage > 0) {
 				this.currentPage--;
 			}
 		},
+
 		saveThemeSettings() {
 			this.$store.dispatch("updateTheme", {
 				key: 'fontFamily',
@@ -305,30 +403,31 @@ const BookDetailComponent = {
 			});
 			this.closeMenu("settingsModal");
 		},
+
 		changeFontSize(delta) {
 			const newSize = this.settings.fontSize + delta * 2;
 			if (newSize >= 12 && newSize <= 24) {
 				this.settings.fontSize = newSize;
 			}
 		},
+
 		toggleBookmark() {
-			if (this.isBookmarked) {
-				this.bookmarks = this.bookmarks.filter(page => page !== this.currentPage);
-			} else {
-				this.bookmarks.push(this.currentPage);
-			}
+			this.toggleState(this.bookmarks, this.currentPage);
 			this.saveBookmarks();
 		},
+
 		toggleBookmarkedView() {
 			this.showBookmarkedOnly = !this.showBookmarkedOnly;
 		},
+
 		loadBookmarks() {
-			const savedBookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-			this.bookmarks = savedBookmarks;
+			this.bookmarks = this.loadFromLocalStorage('bookmarks');
 		},
+
 		saveBookmarks() {
-			localStorage.setItem('bookmarks', JSON.stringify(this.bookmarks));
+			this.saveToLocalStorage('bookmarks', this.bookmarks);
 		},
+
 		toggleBookmark() {
 			if (this.isBookmarked) {
 				this.bookmarks = this.bookmarks.filter(page => page !== this.currentPage);
@@ -337,9 +436,11 @@ const BookDetailComponent = {
 			}
 			this.saveBookmarks();
 		},
+
 		saveHighlights() {
 			localStorage.setItem('highlights', JSON.stringify(this.highlights));
 		},
+
 		async loadHighlights() {
 			try {
 				const pageHighlights = await highlightDB.getHighlights(this.currentPage);
@@ -348,6 +449,7 @@ const BookDetailComponent = {
 				console.error('Error loading highlights:', error);
 			}
 		},
+
 		applyHighlights(content) {
 			if (!this.highlights.length) return content;
 
@@ -402,6 +504,7 @@ const BookDetailComponent = {
 			}
 			return tempDiv.innerHTML;
 		},
+
 		async addHighlight(color) {
 			const selection = window.getSelection();
 			if (selection.isCollapsed) return;
@@ -432,6 +535,7 @@ const BookDetailComponent = {
 				this.closeContextMenu();
 			}
 		},
+
 		async removeHighlight() {
 			const selection = window.getSelection();
 
@@ -457,6 +561,7 @@ const BookDetailComponent = {
 				this.closeContextMenu();
 			}
 		},
+
 		openContextMenu(event) {
 			event.preventDefault();
 
@@ -473,9 +578,11 @@ const BookDetailComponent = {
 				y: event.clientY,
 			};
 		},
+
 		closeContextMenu() {
 			this.contextMenu.visible = false;
 		},
+
 		getTextOffset(root, node, offset) {
 			let textOffset = 0;
 			const walk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
@@ -487,6 +594,7 @@ const BookDetailComponent = {
 
 			return textOffset + (currentNode === node ? offset : 0);
 		},
+
 		mergeOverlappingHighlights() {
 			this.highlights.sort((a, b) => a.after.textStartOffset - b.after.textStartOffset || b.after.textEndOffset - a.after.textEndOffset);
 
@@ -497,19 +605,39 @@ const BookDetailComponent = {
 				if (current.pageIndex === next.pageIndex && next.after.textStartOffset <= current.after.textEndOffset) {
 					current.after.textEndOffset = Math.max(current.after.textEndOffset, next.after.textEndOffset);
 					current.after.htmlEndOffset = Math.max(current.after.htmlEndOffset, next.after.htmlEndOffset);
-					current.content = this.pages[current.pageIndex].slice(current.after.textStartOffset, current.after.textEndOffset);
+					current.content = this.PAGES[current.pageIndex].slice(current.after.textStartOffset, current.after.textEndOffset);
 					this.highlights.splice(i + 1, 1);
 					i--;
 				}
 			}
 		},
+
 		capitalize(str) {
 			return str.charAt(0).toUpperCase() + str.slice(1);
 		},
+
+		saveToLocalStorage(key, value) {
+			localStorage.setItem(key, JSON.stringify(value));
+		},
+
+		loadFromLocalStorage(key, defaultValue = []) {
+			return JSON.parse(localStorage.getItem(key)) || defaultValue;
+		},
+
+		toggleState(array, value) {
+			const index = array.indexOf(value);
+			if (index > -1) {
+				array.splice(index, 1);
+			} else {
+				array.push(value);
+			}
+		},
+
 		handleTouchStart(event) {
 			this.touchStartX = event.touches[0].clientX;
 			this.isTransitioning = false;
 		},
+
 		handleTouchMove(event) {
 			const touchEndX = event.touches[0].clientX;
 			const touchDiff = this.touchStartX - touchEndX;
@@ -523,13 +651,101 @@ const BookDetailComponent = {
 				}
 			}
 		},
+
+		playSong(song, index) {
+			if (this.audioPlayer) {
+				this.audioPlayer.pause();
+			}
+
+			this.audioPlayer = new Audio(song.url);
+			this.currentSong = song;
+			this.currentSongIndex = index;
+
+			// Set up audio event listeners
+			this.audioPlayer.addEventListener('timeupdate', this.updateProgress);
+			this.audioPlayer.addEventListener('loadedmetadata', () => {
+				this.duration = this.audioPlayer.duration;
+			});
+			this.audioPlayer.addEventListener('ended', this.handleSongEnd);
+
+			this.audioPlayer.play();
+			this.isPlaying = true;
+		},
+
+		togglePlay() {
+			if (!this.audioPlayer) {
+				if (this.SONG_OPTIONS.length) {
+					this.playSong(this.SONG_OPTIONS[0], 0);
+				}
+				return;
+			}
+
+			if (this.isPlaying) {
+				this.audioPlayer.pause();
+			} else {
+				this.audioPlayer.play();
+			}
+			this.isPlaying = !this.isPlaying;
+		},
+
+		updateProgress() {
+			if (!this.audioPlayer) return;
+			this.currentTime = this.audioPlayer.currentTime;
+			this.progress = (this.audioPlayer.currentTime / this.audioPlayer.duration) * 100;
+		},
+
+		seekToPosition(event) {
+			if (!this.audioPlayer) return;
+			const rect = event.target.getBoundingClientRect();
+			const x = event.clientX - rect.left;
+			const percentage = x / rect.width;
+			this.audioPlayer.currentTime = percentage * this.audioPlayer.duration;
+		},
+
+		formatTime(seconds) {
+			if (!seconds) return '00:00';
+			const mins = Math.floor(seconds / 60);
+			const secs = Math.floor(seconds % 60);
+			return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+		},
+
+		previousSong() {
+			if (this.currentSongIndex > 0) {
+				this.playSong(this.SONG_OPTIONS[this.currentSongIndex - 1], this.currentSongIndex - 1);
+			}
+		},
+
+		nextSong() {
+			if (this.currentSongIndex < this.SONG_OPTIONS.length - 1) {
+				this.playSong(this.SONG_OPTIONS[this.currentSongIndex + 1], this.currentSongIndex + 1);
+			}
+		},
+
+		handleSongEnd() {
+			if (this.currentSongIndex < this.SONG_OPTIONS.length - 1) {
+				this.nextSong();
+			} else {
+				this.isPlaying = false;
+				this.currentTime = 0;
+				this.progress = 0;
+			}
+		},
+
+		cleanup() {
+			if (this.audioPlayer) {
+				this.audioPlayer.pause();
+				this.audioPlayer.removeEventListener('timeupdate', this.updateProgress);
+				this.audioPlayer.removeEventListener('ended', this.handleSongEnd);
+				this.audioPlayer = null;
+			}
+		}
 	},
 
 	watch: {
 		currentPage: {
 			handler: 'loadHighlights',
 			immediate: true
-		}
+		},
 	},
 
 	async mounted() {
@@ -548,6 +764,7 @@ const BookDetailComponent = {
 	beforeDestroy() {
 		document.removeEventListener('mouseup', this.openContextMenu);
 		document.removeEventListener('click', this.closeContextMenu);
+		this.cleanup();
 	}
 };
 
