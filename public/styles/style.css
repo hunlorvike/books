@@ -1,0 +1,13 @@
+.tag-container {
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.tag-container::-webkit-scrollbar {
+    display: none;
+}
+
+.tag {
+    margin-right: 8px;
+}

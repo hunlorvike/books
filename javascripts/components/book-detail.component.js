@@ -1,258 +1,274 @@
-import { pages } from '../core/pages.js';
+import { pages } from '../core/const.js';
 import { highlightDB } from '../core/db.js';
 
 const BookDetailComponent = {
 	name: 'BookDetailComponent',
+
 	template: `
-        <section class="min-h-screen bg-gray-50 dark:bg-gray-900" @contextmenu.prevent="openContextMenu">
-            <!-- Context Menu -->
-            <div v-if="contextMenu.visible" class="absolute z-50 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-2" :style="{ top: contextMenu.y + 'px', left: contextMenu.x + 'px' }">
-                <button @click="addHighlight" class="w-full text-left px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">Thêm Highlight</button>
-                <button @click="removeHighlight" class="w-full text-left px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">Xoá Highlight</button>
-            </div>
-            
-            <!-- Header -->
-            <header class="fixed top-0 left-0 w-full z-10 p-4 shadow-md bg-white dark:bg-gray-800 dark:text-white">
-                <div class="container mx-auto flex items-center justify-between">
-                    <h1 class="text-[1.125em] sm:text-[1.25em] font-semibold flex items-center gap-2 dark:text-white">
-                        <router-link to="/" class="flex items-center gap-2">
-                            <i class="fas fa-long-arrow-alt-left"></i>
-                            <span class="hidden sm:block">Cẩm nang Du lịch Huế</span>
-                        </router-link>
-                    </h1>
-                    <div class="flex items-center space-x-2 sm:space-x-4">
-                        <button 
-                            class="px-3 py-2 sm:px-4 sm:py-2 rounded-full transition-all shadow bg-primary text-white hover:bg-opacity-80 dark:bg-primary dark:text-white text-sm sm:text-base"
-                            @click="toggleMenu('tableOfContents')"
-                        >
-                            <i class="fas fa-bars sm:text-lg"></i>
-                        </button>
-                        <button 
-                            class="px-3 py-2 sm:px-4 sm:py-2 rounded-full transition-all shadow bg-primary text-white hover:bg-opacity-80 dark:bg-primary dark:text-white text-sm sm:text-base"
-                            @click="toggleMenu('settingsModal')"
-                        >
-                            <i class="fas fa-cog sm:text-lg"></i>
-                        </button>
-                        <button 
-                            class="px-3 py-2 sm:px-4 sm:py-2 rounded-full transition-all shadow bg-primary text-white hover:bg-opacity-80 dark:bg-primary dark:text-white text-sm sm:text-base"
-                            @click="toggleFullScreen"
-                        >
-                            <i class="fas fa-expand sm:text-lg"></i>
-                        </button>
-                        <button 
-                            class="px-3 py-2 sm:px-4 sm:py-2 rounded-full transition-all shadow bg-primary text-white hover:bg-opacity-80 dark:bg-primary dark:text-white text-sm sm:text-base"
-                            @click="toggleDarkMode"
-                        >
-                            <i :class="['fas', isDarkMode ? 'fa-sun' : 'fa-moon', 'sm:text-lg']"></i>
-                        </button>
-                        <button 
-                            class="px-3 py-2 sm:px-4 sm:py-2 rounded-full transition-all shadow bg-primary text-white hover:bg-opacity-80 dark:bg-primary dark:text-white text-sm sm:text-base"
-                            @click="toggleBookmark"
-                        >
-                            <i :class="isBookmarked ? 'fas fa-bookmark' : 'far fa-bookmark'"></i>
-                        </button>
-                    </div>
-                </div>
-            </header>
-    
-            <!-- Main Content -->
-            <main class="mt-16 py-4 transition-all dark:bg-gray-800 dark:text-white flex flex-col items-center justify-between min-h-screen">
-                <!-- Content Section -->
-                <section class="p-4 w-full flex-grow flex items-center justify-center relative">
-                    <div ref="contentRef" class="flex justify-center text-[0.875em] sm:text-[1em] leading-relaxed dark:text-gray-300" v-html="highlightedContent"></div>
-    
-                    <!-- Navigation Buttons -->
-                    <button 
-                        @click="goToPreviousPage" 
-                        :disabled="currentPage === 0" 
-                        class="p-4 rounded-lg shadow-lg border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-white hover:border-transparent absolute left-4 top-1/2 transform -translate-y-1/2 text-[1.25em] sm:text-[1.5em] md:text-[1.75em] lg:text-[2em] xl:text-[2.5em] transition-all duration-300"
-                    >
-                        <i class="fas fa-chevron-left text-xl sm:text-2xl md:text-3xl"></i>
-                    </button>
-    
-                    <button 
-                        @click="goToNextPage" 
-                        :disabled="currentPage === pages.length - 1" 
-                        class="p-4 rounded-lg shadow-lg border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-white hover:border-transparent absolute right-4 top-1/2 transform -translate-y-1/2 text-[1.25em] sm:text-[1.5em] md:text-[1.75em] lg:text-[2em] xl:text-[2.5em] transition-all duration-300"
-                    >
-                        <i class="fas fa-chevron-right text-xl sm:text-2xl md:text-3xl"></i>
-                    </button>
-                </section>
-            </main>
-    
+        <section class="min-h-screen" @contextmenu.prevent="openContextMenu">
+			<header class="p-2 xs:p-3 sm:p-4 shadow-md fixed top-0 left-0 w-full z-10">
+				<div class="container mx-auto flex items-center justify-between h-10 xs:h-12 sm:h-14">
+                    <h1 class="text-[1em] xs:text-[1.5em] sm:text-[1.75em] font-bold leading-tight">
+						<router-link to="/" class="flex items-center gap-2 hover:underline">
+							Về trang chủ
+						</router-link>
+					</h1>
+
+					<div class="flex items-center space-x-1 xs:space-x-2 sm:space-x-4">
+						<!-- Fullscreen Button -->
+						<button 
+							class="p-2 sm:p-3 rounded-lg transition duration-300 shadow-md"
+							@click="toggleFullScreen"
+						>
+							<i class="fas fa-expand"></i>
+						</button>
+
+						<!-- Settings Button -->
+						<button 
+							class="p-2 sm:p-3 rounded-lg transition duration-300 shadow-md"
+							@click="toggleMenu('settingsModal')"
+						>
+							<i class="fas fa-cog"></i>
+						</button>
+
+						<!-- Table of Contents Button -->
+						<button 
+							class="p-2 sm:p-3 rounded-lg transition duration-300 shadow-md"
+							@click="toggleMenu('tableOfContents')"
+						>
+							<i class="fas fa-bars"></i>
+						</button>
+
+						<!-- Bookmark Button -->
+						<button 
+							class="p-2 sm:p-3 rounded-lg transition duration-300 shadow-md"
+							@click="toggleBookmark"
+						>
+							<i :class="[isBookmarked ? 'fas fa-bookmark' : 'far fa-bookmark']"></i>
+						</button>
+					</div>
+				</div>
+			</header>
+
+			<main 
+				class="px-2 xs:px-4 sm:px-6 lg:px-12 py-4 xs:py-8 lg:py-12 flex flex-col items-center justify-between min-h-screen"
+				style="padding-top: 80px;" 
+				@touchstart="handleTouchStart" 
+				@touchmove="handleTouchMove"
+			>
+				<!-- Content Section -->
+				<section class="p-4 w-full flex-grow flex items-center justify-center relative">
+					<div ref="contentRef" class="flex justify-center text-[0.875em] sm:text-[1em] leading-relaxed" v-html="highlightedContent"></div>
+
+					<!-- Navigation Buttons -->
+					<button 
+						@click="navigatePage('previous')" 
+						:disabled="currentPage === 0" 
+						class="hidden sm:flex items-center justify-center w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 border-2 rounded-full shadow-md fixed left-4 top-1/2 transform -translate-y-1/2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+					>
+						<i class="fas fa-chevron-left text-lg md:text-xl lg:text-2xl"></i>
+					</button>
+
+					<button 
+						@click="navigatePage('next')" 
+						:disabled="currentPage === pages.length - 1" 
+						class="hidden sm:flex items-center justify-center w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 border-2 rounded-full shadow-md fixed right-4 top-1/2 transform -translate-y-1/2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+					>
+						<i class="fas fa-chevron-right text-lg md:text-xl lg:text-2xl"></i>
+					</button>
+				</section>
+			</main>
+
             <!-- Table of Contents -->
             <div 
                 :class="{'translate-x-0': isTableOfContentsOpen, 'translate-x-full': !isTableOfContentsOpen}" 
-                class="fixed inset-y-0 right-0 z-30 w-80 shadow-lg border-l transform transition-transform duration-300 dark:border-gray-700 border-gray-200 bg-white dark:bg-gray-800"
+                class="fixed inset-y-0 right-0 z-30 w-80 shadow-lg border-l transform transition-transform duration-300 bg-white"
             >
                 <!-- Header -->
-                <div class="p-4 flex justify-between items-center border-b dark:border-gray-700">
-                    <h2 class="text-[1.125em] sm:text-[1.25em] font-semibold dark:text-white text-gray-800">Mục lục</h2>
-                    <button class="text-gray-500 dark:text-gray-400" @click="closeMenu('tableOfContents'); showBookmarkedOnly = false">
+                <div class="p-4 flex justify-between items-center border-b">
+                    <h2 class="text-[1.125em] sm:text-[1.25em] font-semibold text-gray-800">Mục lục</h2>
+                    <button class="text-gray-500 hover:text-red-500 transition-all" @click="closeMenu('tableOfContents'); showBookmarkedOnly = false">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
     
                 <!-- Toggle Button -->
-                <div class="p-4 border-b dark:border-gray-700 flex justify-end">
+                <div class="p-4 border-b flex justify-end">
                     <button 
                         @click="toggleBookmarkedView"
                         class="w-full text-sm px-4 py-2 rounded transition-all 
-                            p-4 rounded-lg shadow-lg border-2 border-primary text-primary bg-transparent 
-                            hover:bg-primary hover:text-white hover:border-transparent
-                            focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                            p-4 rounded-lg shadow-lg border-2"
                     >
                         {{ showBookmarkedOnly ? 'Xem tất cả trang' : 'Xem trang đánh dấu' }}
                     </button>
                 </div>
     
                 <!-- Content List -->
-                <ul class="divide-y divide-gray-200 dark:divide-gray-700 p-4">
+                <ul class="divide-y divide-gray-200 p-4">
                     <li 
                         v-for="(item, index) in filteredTableOfContents" 
                         :key="index" 
-                        class="flex justify-between items-center px-4 py-3 text-[0.875em] sm:text-[1em] hover:bg-gray-100 dark:hover:bg-gray-700 transition-all rounded"
+                        class="flex justify-between items-center px-4 py-3 text-[0.875em] sm:text-[1em]"
                     >
                         <button 
-                            class="text-left text-primary font-medium hover:underline flex-1"
+                            class="text-left font-medium hover:underline flex-1"
                             @click="goToPage(item.pageIndex)"
                         >
                             {{ item.title }}
                         </button>
                         <i 
                             v-if="bookmarks.includes(item.pageIndex)" 
-                            class="fas fa-bookmark text-yellow-500"
+                            class="fas fa-bookmark"
                             aria-label="Đã đánh dấu trang"
                         ></i>
                     </li>
                 </ul>
             </div>
     
-            <!-- Settings Modal -->
-            <div v-if="isSettingsModalOpen" class="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50" @click.self="closeMenu('settingsModal')">
-                <div class="relative w-96 p-6 rounded-xl shadow-lg bg-white dark:bg-gray-800 dark:text-white text-gray-900" @click.stop>
-                    <div class="flex items-center justify-between">
-                        <h2 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">Cài đặt</h2>
-                        <button class="text-gray-500 dark:text-gray-400" @click="closeMenu('settingsModal')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-    
-                    <!-- Primary Color -->
-                    <div class="mb-6">
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Màu chủ đạo</label>
-                        <input 
-                            type="color" 
-                            v-model="settings.primaryColor"
-                            class="w-full h-10 rounded cursor-pointer border-2 border-gray-300 dark:border-gray-600 focus:outline-none"
-                        >
-                    </div>
-    
-                    <!-- Font Settings -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium dark:text-gray-300">Phông chữ</label>
-                        <select 
-                            v-model="settings.fontFamily" 
-                            class="w-full px-4 py-2 mt-2 rounded-lg bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none"
-                        >
-                            <option v-for="font in fontOptions" :key="font.value" :value="font.value">
-                                {{ font.label }}
-                            </option>
-                        </select>
-                    </div>
-    
-                    <!-- Font Size -->
-                    <div class="mb-6">
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Cỡ chữ</label>
-                        <div class="flex items-center justify-between">
-                            <!-- Slider -->
-                            <div class="w-full flex items-center">
-                                <input
-                                    type="range"
-                                    min="12"
-                                    max="32"
-                                    v-model="settings.fontSize"
-                                    step="2"
-                                    class="w-full h-2 bg-gray-300 dark:bg-gray-600 rounded-lg appearance-none focus:outline-none"
-                                >
-                            </div>
-                            <!-- Font Size Display -->
-                            <span class="ml-4 text-lg font-semibold text-gray-800 dark:text-white">{{ settings.fontSize }}</span>
-                        </div>
-                    </div>
-    
-                    <div class="flex justify-end">
-                        <button 
-                            @click="saveSettings" 
-                            class="px-6 py-2 rounded-lg bg-primary text-white hover:bg-opacity-80 dark:bg-primary dark:text-white transition-all duration-300"
-                        >
-                            Lưu cài đặt
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div v-if="isTableOfContentsOpen" class="fixed inset-0 bg-black bg-opacity-30 z-20" @click="closeMenu('tableOfContents'); showBookmarkedOnly = false"></div>
+			<!-- Settings Modal -->
+			<div v-if="isSettingsModalOpen" class="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50" @click.self="closeMenu('settingsModal')">
+				<div class="relative w-96 p-6 rounded-lg shadow-xl bg-white" @click.stop>
+					<!-- Header -->
+					<div class="flex items-center justify-between mb-4">
+						<h2 class="text-xl font-semibold">Cài đặt</h2>
+						<button class="text-gray-500 hover:text-red-500 transition-all" @click="closeMenu('settingsModal')">
+							<i class="fas fa-times text-lg"></i>
+						</button>
+					</div>
+
+					<!-- Font Settings -->
+					<div class="mb-5">
+						<label class="block text-sm font-medium mb-2">Phông chữ</label>
+						<div class="relative inline-block w-full">
+							<select v-model="settings.fontFamily" class="block w-full px-4 py-2 pr-10 text-gray-800 bg-gray-100 border border-gray-300 rounded-lg">
+								<option v-for="font in fontOptions" :key="font.value" :value="font.value">
+									{{ font.label }}
+								</option>
+							</select>
+						</div>
+					</div>
+
+					<!-- Background Color Settings -->
+					<div class="mb-5">
+						<label class="block text-sm font-medium mb-2">Màu nền</label>
+						<select v-model="settings.theme" class="block w-full px-4 py-2 text-gray-800 bg-gray-100 border border-gray-300 rounded-lg">
+							<option v-for="theme in themeOptions" :key="theme.value" :value="theme.value">
+								{{ theme.label }}
+							</option>
+						</select>
+					</div>
+
+					<!-- Font Size Settings -->
+					<div class="mb-5">
+						<label class="block text-sm font-medium mb-2">Cỡ chữ</label>
+						<div class="flex items-center justify-between">
+							<div class="flex items-center space-x-2 flex-grow justify-center">
+								<button 
+									@click="changeFontSize(-1)" 
+									class="px-4 py-1 border border-gray-300 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 transition-all">
+									-
+								</button>
+								<span class="text-lg font-semibold">{{ settings.fontSize }}</span>
+								<button 
+									@click="changeFontSize(1)" 
+									class="px-4 py-1 border border-gray-300 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 transition-all">
+									+
+								</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- Save Button -->
+					<div class="flex justify-end">
+						<button 
+							@click="saveThemeSettings" 
+							class="px-6 py-2 font-medium rounded-lg border-2">
+							Lưu cài đặt
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div v-if="isTableOfContentsOpen" class="fixed inset-0 bg-black bg-opacity-30 z-20" @click="closeMenu('tableOfContents'); showBookmarkedOnly = false"></div>
+
+			<!-- Context Menu -->
+			<div v-if="contextMenu.visible" class="absolute z-50 bg-white shadow-lg rounded-lg p-2 flex space-x-2" :style="{ top: contextMenu.y + 'px', left: contextMenu.x + 'px' }">
+				<button 
+					v-for="color in highlightColors" 
+					:key="color" 
+					@click="addHighlight(color)" 
+					class="w-10 h-10 rounded border border-gray-300 shadow hover:shadow-md" 
+					:style="{ backgroundColor: color }">
+				</button>
+				<button @click="removeHighlight" class="w-10 h-10 rounded border border-gray-300 shadow hover:shadow-md"></button>
+			</div>
         </section>
     `,
+
 	data() {
 		return {
-			dropdownOpen: false,
-			isTableOfContentsOpen: false,
-			isSettingsModalOpen: false,
-			openChapters: {},
-			tableOfContents: [
-				{ title: "Trang bìa", pageIndex: 0 },
-				{ title: "Nội dung chính", pageIndex: 1 },
-				{ title: "Video và giới thiệu", pageIndex: 2 },
-				{ title: "Nội dung chờ", pageIndex: 3 },
-			],
-			pages,
-			currentPage: 0,
-			fontOptions: [
-				{ value: 'Arial', label: 'Arial' },
-				{ value: 'Georgia', label: 'Georgia' },
-				{ value: 'Times New Roman', label: 'Times New Roman' },
-				{ value: 'Courier New', label: 'Courier New' },
-				{ value: 'Verdana', label: 'Verdana' },
-				{ value: 'Tahoma', label: 'Tahoma' },
-				{ value: 'Roboto', label: 'Roboto' },
-			],
-			showBookmarkedOnly: false,
 			bookmarks: [],
-			highlightText: {
-				id: '',
-				content: '',
-				pageIndex: 0,
-				startOffset: 0,
-				endOffset: 0,
-			},
-			highlights: [],
 			contextMenu: {
 				visible: false,
 				x: 0,
 				y: 0,
 			},
+			dropdownOpen: false,
+			fontOptions: [
+				{ value: 'Arial', label: 'Arial' },
+				{ value: 'Tahoma', label: 'Tahoma' },
+				{ value: 'Verdana', label: 'Verdana' },
+				{ value: 'Roboto', label: 'Roboto' },
+				{ value: 'Open Sans', label: 'Open Sans' },
+				{ value: 'Noto Sans', label: 'Noto Sans' },
+			],
+			highlightColors: ['#FFFF00', '#90EE90', '#FFA500', '#ADD8E6'],
+			highlightText: {
+				id: '',
+				content: '',
+				color: '',
+				pageIndex: 0,
+				startOffset: 0,
+				endOffset: 0,
+			},
+			highlights: [],
+			isSettingsModalOpen: false,
+			isTableOfContentsOpen: false,
+			openChapters: {},
+			pages,
+			currentPage: 0,
+			showBookmarkedOnly: false,
+			themeOptions: [
+				{ value: 'default', label: 'Mặc định' },
+				{ value: 'light', label: 'Trắng' },
+				{ value: 'black', label: 'Đen' },
+			],
 		};
 	},
+
 	computed: {
 		settings() {
 			return this.$store.getters.theme;
 		},
-		isDarkMode() {
-			return this.settings.theme === 'dark';
-		},
 		filteredTableOfContents() {
 			return this.showBookmarkedOnly
-				? this.tableOfContents.filter(item => this.bookmarks.includes(item.pageIndex))
-				: this.tableOfContents;
+				? this.pages.filter((page, index) => this.bookmarks.includes(index)).map((page, index) => ({
+					title: page.title,
+					pageIndex: index
+				}))
+				: this.pages.map((page, index) => ({
+					title: page.title,
+					pageIndex: index
+				}));
 		},
 		isBookmarked() {
 			return this.bookmarks.includes(this.currentPage);
 		},
 		highlightedContent() {
-			return this.applyHighlights(this.pages[this.currentPage]);
+			return this.applyHighlights(this.pages[this.currentPage].content);
 		},
 	},
+
 	methods: {
 		toggleFullScreen() {
 			if (!document.fullscreenElement) {
@@ -267,27 +283,21 @@ const BookDetailComponent = {
 		closeMenu(menu) {
 			this[`is${this.capitalize(menu)}Open`] = false;
 		},
-		goToPage(pageIndex) {
-			this.currentPage = pageIndex;
-		},
-		goToNextPage() {
-			if (this.currentPage < this.pages.length - 1) {
+		navigatePage(direction) {
+			if (direction === 'next' && this.currentPage < this.pages.length - 1) {
 				this.currentPage++;
-			}
-		},
-		goToPreviousPage() {
-			if (this.currentPage > 0) {
+			} else if (direction === 'previous' && this.currentPage > 0) {
 				this.currentPage--;
 			}
 		},
-		saveSettings() {
-			this.$store.dispatch("updateTheme", {
-				key: 'primaryColor',
-				value: this.settings.primaryColor
-			});
+		saveThemeSettings() {
 			this.$store.dispatch("updateTheme", {
 				key: 'fontFamily',
 				value: this.settings.fontFamily
+			});
+			this.$store.dispatch("updateTheme", {
+				key: 'theme',
+				value: this.settings.theme
 			});
 			this.$store.dispatch("updateTheme", {
 				key: 'fontSize',
@@ -295,11 +305,19 @@ const BookDetailComponent = {
 			});
 			this.closeMenu("settingsModal");
 		},
-		toggleDarkMode() {
-			this.$store.dispatch("updateTheme", {
-				key: 'theme',
-				value: this.isDarkMode ? 'light' : 'dark'
-			});
+		changeFontSize(delta) {
+			const newSize = this.settings.fontSize + delta * 2;
+			if (newSize >= 12 && newSize <= 24) {
+				this.settings.fontSize = newSize;
+			}
+		},
+		toggleBookmark() {
+			if (this.isBookmarked) {
+				this.bookmarks = this.bookmarks.filter(page => page !== this.currentPage);
+			} else {
+				this.bookmarks.push(this.currentPage);
+			}
+			this.saveBookmarks();
 		},
 		toggleBookmarkedView() {
 			this.showBookmarkedOnly = !this.showBookmarkedOnly;
@@ -374,18 +392,17 @@ const BookDetailComponent = {
 					range.setEnd(endNode, endNodeOffset);
 
 					const highlightSpan = document.createElement('span');
-					highlightSpan.classList.add('highlight');
-					highlightSpan.setAttribute('id', highlight.id);
+					highlightSpan.classList.add('highlight', `bg-[${highlight.color}]`, 'text-black');
+					highlightSpan.setAttribute('id', 'highlight-id');
 					highlightSpan.textContent = range.toString();
 
 					range.deleteContents();
 					range.insertNode(highlightSpan);
 				}
 			}
-
 			return tempDiv.innerHTML;
 		},
-		async addHighlight() {
+		async addHighlight(color) {
 			const selection = window.getSelection();
 			if (selection.isCollapsed) return;
 
@@ -399,6 +416,7 @@ const BookDetailComponent = {
 			let highlightToSave = {
 				id: Date.now().toString(36) + Math.random().toString(36).substr(2),
 				content: selection.toString().trim(),
+				color: color,
 				pageIndex: this.currentPage,
 				startOffset,
 				endOffset,
@@ -487,14 +505,33 @@ const BookDetailComponent = {
 		},
 		capitalize(str) {
 			return str.charAt(0).toUpperCase() + str.slice(1);
-		}
+		},
+		handleTouchStart(event) {
+			this.touchStartX = event.touches[0].clientX;
+			this.isTransitioning = false;
+		},
+		handleTouchMove(event) {
+			const touchEndX = event.touches[0].clientX;
+			const touchDiff = this.touchStartX - touchEndX;
+
+			if (Math.abs(touchDiff) > 50 && !this.isTransitioning) {
+				this.isTransitioning = true;
+				if (touchDiff > 0) {
+					this.navigatePage('next');
+				} else {
+					this.navigatePage('previous');
+				}
+			}
+		},
 	},
+
 	watch: {
 		currentPage: {
 			handler: 'loadHighlights',
 			immediate: true
 		}
 	},
+
 	async mounted() {
 		try {
 			await highlightDB.openDatabase();
@@ -507,6 +544,7 @@ const BookDetailComponent = {
 			console.error('Initialization error:', error);
 		}
 	},
+
 	beforeDestroy() {
 		document.removeEventListener('mouseup', this.openContextMenu);
 		document.removeEventListener('click', this.closeContextMenu);

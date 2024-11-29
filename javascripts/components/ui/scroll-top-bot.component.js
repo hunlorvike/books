@@ -4,11 +4,11 @@ const ScrollTopBot = {
     template: `
         <div class="fixed bottom-4 right-4 flex flex-col items-center gap-4 z-50">
             <button v-if="showScrollButton === 'top'" @click="scrollToTop" 
-                class="p-4 rounded-lg shadow-lg border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-white hover:border-transparent" aria-label="Scroll to top">
+                class="p-4 rounded-lg shadow-lg border-2">
                 <i class="fas fa-chevron-up"></i>
             </button>
             <button v-if="showScrollButton === 'bottom'" @click="scrollToBottom" 
-                class="p-4 rounded-lg shadow-lg border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-white hover:border-transparent" aria-label="Scroll to bottom">
+                class="p-4 rounded-lg shadow-lg border-2">
                 <i class="fas fa-chevron-down"></i>
             </button>
         </div>

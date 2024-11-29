@@ -1,8 +1,7 @@
-export const store = new Vuex.Store({
+const store = new Vuex.Store({
 	state: {
 		theme: {
-			theme: localStorage.getItem('theme') || 'light',
-			primaryColor: localStorage.getItem('primaryColor') || '#3490dc',
+			theme: localStorage.getItem('theme') || 'default',
 			fontFamily: localStorage.getItem('fontFamily') || 'Tahoma',
 			fontSize: parseInt(localStorage.getItem('fontSize')) || 16,
 		},
@@ -11,23 +10,34 @@ export const store = new Vuex.Store({
 	mutations: {
 		UPDATE_THEME(state, { key, value }) {
 			state.theme[key] = value;
-			localStorage.setItem(key, value);
 			this.commit('APPLY_THEME_TO_DOM');
+			this.commit('SYNC_THEME_WITH_LOCALSTORAGE');
 		},
+
+		SYNC_THEME_WITH_LOCALSTORAGE(state) {
+			Object.entries(state.theme).forEach(([key, value]) => {
+				localStorage.setItem(key, value);
+			});
+		},
+
 		SET_CURRENT_PAGE(state, pageIndex) {
 			state.currentPage = pageIndex;
 		},
-		APPLY_THEME_TO_DOM(state) {
-			const root = document.documentElement;
-			Object.entries(state.theme).forEach(([key, value]) => {
-				const cssVar = `--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
-				root.style.setProperty(cssVar, key === 'fontSize' ? `${value}px` : value);
-			});
 
-			document.body.className = '';
-			document.body.classList.toggle('dark', state.theme.theme === 'dark');
+		APPLY_THEME_TO_DOM(state) {
+			const { theme, fontFamily, fontSize } = state.theme;
+			const root = document.documentElement;
+			const body = document.body;
+
+			root.style.setProperty('--font-family', fontFamily);
+			root.style.setProperty('--font-size', `${fontSize}px`);
+
+			body.className = '';
+
+			body.classList.add(theme);
 		},
 	},
+
 	actions: {
 		updateTheme({ commit }, payload) {
 			commit('UPDATE_THEME', payload);
@@ -35,12 +45,12 @@ export const store = new Vuex.Store({
 		updateCurrentPage({ commit }, pageIndex) {
 			commit('SET_CURRENT_PAGE', pageIndex);
 		},
-		initializeTheme({ commit }) {
-			commit('APPLY_THEME_TO_DOM');
-		},
 	},
+
 	getters: {
 		currentPage: state => state.currentPage,
 		theme: state => state.theme,
 	},
 });
+
+export { store };

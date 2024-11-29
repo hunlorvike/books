@@ -8,9 +8,9 @@ const highlightDB = {
             request.onupgradeneeded = (event) => {
                 const db = event.target.result;
                 if (!db.objectStoreNames.contains('highlights')) {
-                    const store = db.createObjectStore('highlights', { 
+                    const store = db.createObjectStore('highlights', {
                         keyPath: 'id',
-                        autoIncrement: false 
+                        autoIncrement: false
                     });
 
                     store.createIndex('pageIndex', 'pageIndex', { unique: false });
