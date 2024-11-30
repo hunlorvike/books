@@ -47,13 +47,6 @@ const BookDetailComponent = {
 							<i class="fas fa-bars"></i>
 						</button>
 
-						<!-- Bookmark Button -->
-						<button 
-							class="p-2 sm:p-3 rounded-lg transition duration-300 shadow-md"
-							@click="toggleBookmark"
-						>
-							<i :class="[isBookmarked ? 'fas fa-bookmark' : 'far fa-bookmark']"></i>
-						</button>
 					</div>
 				</div>
 			</header>
@@ -95,40 +88,24 @@ const BookDetailComponent = {
                 <!-- Header -->
                 <div class="p-4 flex justify-between items-center border-b">
                     <h2 class="text-[1.125em] sm:text-[1.25em] font-semibold text-gray-800">Mục lục</h2>
-                    <button class="text-gray-500 hover:text-red-500 transition-all" @click="closeMenu('tableOfContents'); showBookmarkedOnly = false">
+                    <button class="text-gray-500 hover:text-red-500 transition-all" @click="closeMenu('tableOfContents');">
                         <i class="fas fa-times"></i>
-                    </button>
-                </div>
-    
-                <!-- Toggle Button -->
-                <div class="p-4 border-b flex justify-end">
-                    <button 
-                        @click="toggleBookmarkedView"
-                        class="w-full text-sm px-4 py-2 rounded transition-all 
-                            p-4 rounded-lg shadow-lg border-2"
-                    >
-                        {{ showBookmarkedOnly ? 'Xem tất cả trang' : 'Xem trang đánh dấu' }}
                     </button>
                 </div>
     
                 <!-- Content List -->
                 <ul class="divide-y divide-gray-200 p-4">
                     <li 
-                        v-for="(item, index) in filteredTableOfContents" 
+                        v-for="(item, index) in PAGES" 
                         :key="index" 
                         class="flex justify-between items-center px-4 py-3 text-[0.875em] sm:text-[1em]"
                     >
                         <button 
                             class="text-left font-medium hover:underline flex-1"
-                            @click="currentPage = item.pageIndex"
+                            @click="currentPage = index"
                         >
                             {{ item.title }}
                         </button>
-                        <i 
-                            v-if="bookmarks.includes(item.pageIndex)" 
-                            class="fas fa-bookmark"
-                            aria-label="Đã đánh dấu trang"
-                        ></i>
                     </li>
                 </ul>
             </div>
@@ -282,29 +259,58 @@ const BookDetailComponent = {
 				</div>
 			</div>
 
-			<div v-if="isTableOfContentsOpen" class="fixed inset-0 bg-black bg-opacity-30 z-20" @click="closeMenu('tableOfContents'); showBookmarkedOnly = false"></div>
+			<div v-if="isTableOfContentsOpen" class="fixed inset-0 bg-black bg-opacity-30 z-20" @click="closeMenu('tableOfContents');"></div>
 
 			<!-- Context Menu -->
-			<div v-if="contextMenu.visible" class="absolute z-50 bg-white shadow-lg rounded-lg p-2 flex space-x-2" :style="{ top: contextMenu.y + 'px', left: contextMenu.x + 'px' }">
+			<div v-if="contextMenu.visible" 
+				class="absolute z-50 bg-white shadow-xl rounded-lg overflow-hidden w-56"
+				:style="{ top: contextMenu.y + 'px', left: contextMenu.x + 'px' }">
+				
+				<!-- Highlight color buttons (show only when text is selected) -->
+				<div v-if="contextMenu.selection" class="p-3 border-b border-gray-200">
+					<div class="flex space-x-3">
+						<button 
+							v-for="color in HIGHLIGHT_COLORS" 
+							:key="color" 
+							@click="addHighlight(color)" 
+							class="w-8 h-8 rounded-full border-2 border-gray-300 hover:border-gray-600 transition-colors duration-200" 
+							:style="{ backgroundColor: color }">
+						</button>
+						<button @click="removeHighlight" class="w-8 h-8 rounded-full border-2 border-gray-300 hover:border-gray-600 transition-colors duration-200 flex items-center justify-center">
+							<i class="fas fa-trash text-gray-500 hover:text-gray-700 transition-colors duration-200"></i>
+						</button>
+					</div>
+				</div>
+				
+				<!-- Save Reading Position Option -->
 				<button 
-					v-for="color in HIGHLIGHT_COLORS" 
-					:key="color" 
-					@click="addHighlight(color)" 
-					class="w-10 h-10 rounded border border-gray-300 shadow hover:shadow-md" 
-					:style="{ backgroundColor: color }">
+					@click="saveReadingPosition" 
+					class="w-full px-4 py-3 text-left hover:bg-gray-100 transition-colors duration-200 flex items-center space-x-3"
+				>
+					<i class="fas fa-bookmark text-gray-500 hover:text-gray-700 transition-colors duration-200"></i>
+					<span class="text-gray-600 hover:text-gray-800 text-sm font-medium transition-colors duration-200">Lưu vị trí đọc</span>
 				</button>
-				<button @click="removeHighlight" class="w-10 h-10 rounded border border-gray-300 shadow hover:shadow-md"></button>
+
+				<button 
+					@click="clearSavedReadingPosition" 
+					class="w-full px-4 py-3 text-left hover:bg-gray-100 transition-colors duration-200 flex items-center space-x-3"
+				>
+					<i class="fas fa-trash text-gray-500 hover:text-gray-700 transition-colors duration-200"></i>
+					<span class="text-gray-600 hover:text-gray-800 text-sm font-medium transition-colors duration-200">Xóa vị trí đã lưu</span>
+				</button>
+
 			</div>
+			
         </section>
     `,
 
 	data() {
 		return {
-			bookmarks: [],
 			contextMenu: {
 				visible: false,
 				x: 0,
 				y: 0,
+				selection: null,
 			},
 			dropdownOpen: false,
 			FONT_OPTIONS,
@@ -323,7 +329,6 @@ const BookDetailComponent = {
 			openChapters: {},
 			PAGES,
 			currentPage: 0,
-			showBookmarkedOnly: false,
 			THEME_OPTIONS,
 			isMusicModalOpen: false,
 			SONG_OPTIONS,
@@ -340,22 +345,6 @@ const BookDetailComponent = {
 	computed: {
 		settings() {
 			return this.$store.getters.theme;
-		},
-
-		filteredTableOfContents() {
-			return this.showBookmarkedOnly
-				? this.PAGES.filter((page, index) => this.bookmarks.includes(index)).map((page, index) => ({
-					title: page.title,
-					pageIndex: index
-				}))
-				: this.PAGES.map((page, index) => ({
-					title: page.title,
-					pageIndex: index
-				}));
-		},
-
-		isBookmarked() {
-			return this.bookmarks.includes(this.currentPage);
 		},
 
 		highlightedContent() {
@@ -409,32 +398,6 @@ const BookDetailComponent = {
 			if (newSize >= 12 && newSize <= 24) {
 				this.settings.fontSize = newSize;
 			}
-		},
-
-		toggleBookmark() {
-			this.toggleState(this.bookmarks, this.currentPage);
-			this.saveBookmarks();
-		},
-
-		toggleBookmarkedView() {
-			this.showBookmarkedOnly = !this.showBookmarkedOnly;
-		},
-
-		loadBookmarks() {
-			this.bookmarks = this.loadFromLocalStorage('bookmarks');
-		},
-
-		saveBookmarks() {
-			this.saveToLocalStorage('bookmarks', this.bookmarks);
-		},
-
-		toggleBookmark() {
-			if (this.isBookmarked) {
-				this.bookmarks = this.bookmarks.filter(page => page !== this.currentPage);
-			} else {
-				this.bookmarks.push(this.currentPage);
-			}
-			this.saveBookmarks();
 		},
 
 		saveHighlights() {
@@ -564,21 +527,18 @@ const BookDetailComponent = {
 
 		openContextMenu(event) {
 			event.preventDefault();
-
+		
 			const selection = window.getSelection();
-
-			if (selection.isCollapsed || selection.toString().trim() === '') {
-				this.contextMenu.visible = false;
-				return;
-			}
-
+		
+			const hasSelection = !selection.isCollapsed && selection.toString().trim() !== '';
 			this.contextMenu = {
 				visible: true,
-				x: event.clientX,
-				y: event.clientY,
+				x: event.pageX,
+				y: event.pageY,
+				selection: hasSelection ? selection : null
 			};
 		},
-
+		
 		closeContextMenu() {
 			this.contextMenu.visible = false;
 		},
@@ -738,7 +698,93 @@ const BookDetailComponent = {
 				this.audioPlayer.removeEventListener('ended', this.handleSongEnd);
 				this.audioPlayer = null;
 			}
+		},
+
+		saveReadingPosition() {
+			const selection = window.getSelection();
+			if (selection.isCollapsed) return;
+
+			const position = {
+				page: this.currentPage,
+				startOffset: selection.getRangeAt(0).startOffset,
+				endOffset: selection.getRangeAt(0).endOffset,
+			}
+
+			localStorage.setItem('readingPosition', JSON.stringify(position));
+		},
+
+		loadSavedReadingPosition() {
+			const savedPosition = localStorage.getItem('readingPosition');
+
+			if (savedPosition) {
+
+				const confirmLoad = window.confirm("Bạn có muốn đến vị trí đọc cuối cùng của mình không?");
+
+				if (confirmLoad) {
+					const position = JSON.parse(savedPosition);
+					this.currentPage = position.page;
+
+					setTimeout(() => {
+						const content = this.$refs.contentRef;
+						const range = document.createRange();
+						const textNodes = this.getTextNodesIn(content);
+
+						let charCount = 0;
+						let startNode, endNode, startOffset, endOffset;
+
+						for (let i = 0; i < textNodes.length; i++) {
+							const node = textNodes[i];
+							const nodeLength = node.length;
+
+							if (!startNode && charCount + nodeLength > position.startOffset) {
+								startNode = node;
+								startOffset = position.startOffset - charCount;
+							}
+
+							if (!endNode && charCount + nodeLength >= position.endOffset) {
+								endNode = node;
+								endOffset = position.endOffset - charCount;
+								break;
+							}
+
+							charCount += nodeLength;
+						}
+
+						if (startNode && endNode) {
+							range.setStart(startNode, startOffset);
+							range.setEnd(endNode, endOffset);
+
+							const selection = window.getSelection();
+							selection.removeAllRanges();
+							selection.addRange(range);
+
+							range.startContainer.parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+						}
+
+						localStorage.removeItem('readingPosition');
+					}, 0);
+				}
+			}
+		},
+
+		getTextNodesIn(node) {
+			let textNodes = [];
+			if (node.nodeType === 3) {
+				textNodes.push(node);
+			} else {
+				const children = node.childNodes;
+				for (let i = 0, len = children.length; i < len; ++i) {
+					textNodes = textNodes.concat(this.getTextNodesIn(children[i]));
+				}
+			}
+			return textNodes;
+		},
+
+
+		clearSavedReadingPosition() {
+			localStorage.removeItem('readingPosition');
 		}
+
 	},
 
 	watch: {
@@ -752,7 +798,7 @@ const BookDetailComponent = {
 		try {
 			await highlightDB.openDatabase();
 
-			this.loadBookmarks();
+			this.loadSavedReadingPosition();
 
 			document.addEventListener('click', this.closeContextMenu);
 			document.addEventListener('mouseup', this.openContextMenu);
