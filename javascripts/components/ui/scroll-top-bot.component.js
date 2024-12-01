@@ -3,12 +3,18 @@ const ScrollTopBot = {
 
     template: `
         <div class="fixed bottom-4 right-4 flex flex-col items-center gap-4 z-50">
-            <button v-if="showScrollButton === 'top'" @click="scrollToTop" 
-                class="p-4 rounded-lg shadow-lg border-2">
+            <button v-if="showScrollButton === 'top'" 
+                @click="scrollToTop"
+                class="p-2 sm:p-3 rounded-lg border-2 border-[#a1ce9f] bg-white text-[#a1ce9f] 
+                       shadow-md transition duration-300 ease-in-out 
+                       hover:bg-[#f0f7ef] hover:shadow-lg">
                 <i class="fas fa-chevron-up"></i>
             </button>
-            <button v-if="showScrollButton === 'bottom'" @click="scrollToBottom" 
-                class="p-4 rounded-lg shadow-lg border-2">
+            <button v-if="showScrollButton === 'bottom'" 
+                @click="scrollToBottom"
+                class="p-2 sm:p-3 rounded-lg border-2 border-[#a1ce9f] bg-white text-[#a1ce9f] 
+                       shadow-md transition duration-300 ease-in-out 
+                       hover:bg-[#f0f7ef] hover:shadow-lg">
                 <i class="fas fa-chevron-down"></i>
             </button>
         </div>

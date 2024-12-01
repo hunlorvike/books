@@ -27,14 +27,11 @@ const store = new Vuex.Store({
 		APPLY_THEME_TO_DOM(state) {
 			const { theme, fontFamily, fontSize } = state.theme;
 			const root = document.documentElement;
-			const body = document.body;
-
+			
 			root.style.setProperty('--font-family', fontFamily);
 			root.style.setProperty('--font-size', `${fontSize}px`);
 
-			body.className = '';
-
-			body.classList.add(theme);
+			document.querySelector('html').setAttribute('data-theme', theme);
 		},
 	},
 
