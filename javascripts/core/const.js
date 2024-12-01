@@ -150,7 +150,113 @@ const PAGES = [
 			</div>`,
 	},
 
-	// Trang 4: Nội dung chờ
+	// Trang 4: Câu hỏi trắc nghiệm
+	{
+		title: 'Câu hỏi trắc nghiệm',
+		content:
+			`<div class="flex-grow p-4 sm:p-6 max-w-md sm:max-w-[1400px] mx-auto space-y-8">
+            <h2 class="text-[1.25em] sm:text-[1.5em] font-semibold text-center">Câu hỏi ôn tập</h2>
+            
+            <!-- Câu hỏi 1 -->
+            <div class="mt-4">
+                <p class="text-[1em] sm:text-[1.125em] font-medium">
+                    1. Huế từng là kinh đô của triều đại nào sau đây?
+                </p>
+                <form class="mt-2 space-y-2">
+                    <label class="block">
+                        <input type="radio" name="question1" value="Tây Sơn" />
+                        Tây Sơn
+                    </label>
+                    <label class="block">
+                        <input type="radio" name="question1" value="Nguyễn" />
+                        Nguyễn
+                    </label>
+                    <label class="block">
+                        <input type="radio" name="question1" value="Lý" />
+                        Lý
+                    </label>
+                </form>
+            </div>
+            
+            <!-- Câu hỏi 2 -->
+            <div class="mt-4">
+                <p class="text-[1em] sm:text-[1.125em] font-medium">
+                    2. Tên của loại hình âm nhạc cung đình đặc trưng của Huế là gì?
+                </p>
+                <form class="mt-2 space-y-2">
+                    <label class="block">
+                        <input type="radio" name="question2" value="Nhã nhạc" />
+                        Nhã nhạc
+                    </label>
+                    <label class="block">
+                        <input type="radio" name="question2" value="Ca trù" />
+                        Ca trù
+                    </label>
+                    <label class="block">
+                        <input type="radio" name="question2" value="Hát chèo" />
+                        Hát chèo
+                    </label>
+                </form>
+            </div>
+            
+            <!-- Câu hỏi 3 -->
+            <div class="mt-4">
+                <p class="text-[1em] sm:text-[1.125em] font-medium">
+                    3. Ai chịu trách nhiệm xuất bản cuốn sách điện tử này?
+                </p>
+                <form class="mt-2 space-y-2">
+                    <label class="block">
+                        <input type="radio" name="question3" value="Nguyễn Văn Đủ" />
+                        Nguyễn Văn Đủ
+                    </label>
+                    <label class="block">
+                        <input type="radio" name="question3" value="Nguyễn Bảo Kỳ" />
+                        Nguyễn Bảo Kỳ
+                    </label>
+                    <label class="block">
+                        <input type="radio" name="question3" value="Phan Tiến Dũng" />
+                        Phan Tiến Dũng
+                    </label>
+                </form>
+            </div>
+        </div>`
+	},
+
+	// Trang 5: Slider ảnh
+	{
+		title: 'Slider ảnh với Swiper.js',
+		content: `
+<div class="flex-grow p-4 sm:p-6 max-w-md sm:max-w-[1400px] mx-auto space-y-8">
+    <div class="mx-auto max-w-full sm:max-w-3xl lg:max-w-5xl xl:max-w-6xl">
+        <div class="swiper-container rounded-lg overflow-hidden shadow-lg bg-gray-50">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="h-32 sm:h-40 md:h-48 lg:h-60">
+                        <img src="./public/images/gallery/anh1.jpg" alt="Image 1" class="object-cover w-full h-full">
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="h-32 sm:h-40 md:h-48 lg:h-60">
+                        <img src="./public/images/gallery/anh2.jpg" alt="Image 2" class="object-cover w-full h-full">
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="h-32 sm:h-40 md:h-48 lg:h-60">
+                        <img src="./public/images/gallery/anh3.jpg" alt="Image 3" class="object-cover w-full h-full">
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="h-32 sm:h-40 md:h-48 lg:h-60">
+                        <img src="./public/images/gallery/anh4.jpg" alt="Image 4" class="object-cover w-full h-full">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>`
+	},
+
+	// Trang cuối: Nội dung chờ
 	{
 		title: 'Nội dung chờ',
 		content:

@@ -359,6 +359,7 @@ const BookDetailComponent = {
 			currentTime: 0,
 			duration: 0,
 			progress: 0,
+			swiperInstance: null, 
 		};
 	},
 
@@ -373,6 +374,34 @@ const BookDetailComponent = {
 	},
 
 	methods: {
+		initializeSwiper() {
+			if (this.swiperInstance) {
+				this.swiperInstance.destroy(true, true);
+				this.swiperInstance = null;
+			}
+	
+			this.$nextTick(() => {
+				const swiperContainer = this.$refs.contentRef.querySelector('.swiper-container');
+				const swiperWrapper = swiperContainer?.querySelector('.swiper-wrapper');
+		
+				if (!swiperContainer || !swiperWrapper) {
+					return;
+				}
+			
+				this.swiperInstance = new Swiper('.swiper-container', {
+					loop: false,
+					pagination: {
+						el: '.swiper-pagination',
+						clickable: true,
+					},		
+					autoplay: {
+						delay: 3000,
+						disableOnInteraction: false,
+					},
+				});
+			});
+		},
+
 		toggleFullScreen() {
 			if (!document.fullscreenElement) {
 				document.documentElement.requestFullscreen();
@@ -819,20 +848,25 @@ const BookDetailComponent = {
 
 	watch: {
 		currentPage: {
-			handler: 'loadHighlights',
-			immediate: true
+			handler() {
+				this.loadHighlights();
+				this.initializeSwiper(); 
+			},
+			immediate: true,
 		},
 	},
+
 
 	async mounted() {
 		try {
 			await highlightDB.openDatabase();
 
-			this.loadSavedReadingPosition();
+			this.$nextTick(() => {
+				this.loadSavedReadingPosition();
+			});
 
 			document.addEventListener('click', this.closeContextMenu);
 			document.addEventListener('mouseup', this.openContextMenu);
-			
 		} catch (error) {
 			console.error('Initialization error:', error);
 		}
