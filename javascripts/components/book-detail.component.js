@@ -8,45 +8,50 @@ const BookDetailComponent = {
         <section class="min-h-screen" @contextmenu.prevent="openContextMenu">
 			<header class="p-2 xs:p-3 sm:p-4 shadow-md fixed top-0 left-0 w-full z-10">
 				<div class="container mx-auto flex items-center justify-between h-10 xs:h-12 sm:h-14">
-                    <h1 class="text-[1em] xs:text-[1.5em] sm:text-[1.75em] font-bold leading-tight">
+					<!-- Logo / Title -->
+					<h1 class="text-[1em] xs:text-[1.5em] sm:text-[1.75em] font-bold leading-tight">
 						<router-link to="/" class="flex items-center gap-2 hover:underline">
 							Về trang chủ
 						</router-link>
 					</h1>
 
+					<!-- Header Buttons -->
 					<div class="flex items-center space-x-1 xs:space-x-2 sm:space-x-4">
 						<!-- Fullscreen Button -->
 						<button 
-							class="p-2 sm:p-3 rounded-lg transition duration-300 shadow-md"
-							@click="toggleFullScreen"
-						>
+								@click="toggleFullScreen"
+								class="p-2 sm:p-3 rounded-lg border-2 border-[#a1ce9f] bg-white text-[#a1ce9f] 
+								shadow-md transition duration-300 ease-in-out 
+								hover:bg-[#f0f7ef] hover:shadow-lg">
 							<i class="fas fa-expand"></i>
 						</button>
 
 						<!-- Music Button -->
 						<button 
-							class="p-2 sm:p-3 rounded-lg transition duration-300 shadow-md"
-							@click="toggleMenu('musicModal')"
-						>
+								@click="toggleMenu('musicModal')"
+								class="p-2 sm:p-3 rounded-lg border-2 border-[#a1ce9f] bg-white text-[#a1ce9f] 
+								shadow-md transition duration-300 ease-in-out 
+								hover:bg-[#f0f7ef] hover:shadow-lg">
 							<i class="fas fa-music"></i>
 						</button>
 
 						<!-- Settings Button -->
-						<button 
-							class="p-2 sm:p-3 rounded-lg transition duration-300 shadow-md"
-							@click="toggleMenu('settingsModal')"
-						>
+						<button
+								@click="toggleMenu('settingsModal')"
+								class="p-2 sm:p-3 rounded-lg border-2 border-[#a1ce9f] bg-white text-[#a1ce9f] 
+								shadow-md transition duration-300 ease-in-out 
+								hover:bg-[#f0f7ef] hover:shadow-lg">
 							<i class="fas fa-cog"></i>
 						</button>
 
 						<!-- Table of Contents Button -->
 						<button 
-							class="p-2 sm:p-3 rounded-lg transition duration-300 shadow-md"
-							@click="toggleMenu('tableOfContents')"
-						>
+								@click="toggleMenu('tableOfContents')"
+								class="p-2 sm:p-3 rounded-lg border-2 border-[#a1ce9f] bg-white text-[#a1ce9f] 
+								shadow-md transition duration-300 ease-in-out 
+								hover:bg-[#f0f7ef] hover:shadow-lg">
 							<i class="fas fa-bars"></i>
 						</button>
-
 					</div>
 				</div>
 			</header>
@@ -61,20 +66,29 @@ const BookDetailComponent = {
 				<section class="p-4 w-full flex-grow flex sm:items-center justify-center relative">
 					<div ref="contentRef" class="flex justify-center text-[0.875em] sm:text-[1em] leading-relaxed" v-html="highlightedContent"></div>
 
-					<!-- Navigation Buttons -->
+					<!-- Previous Button -->
 					<button 
 						@click="navigatePage('previous')" 
 						:disabled="currentPage === 0" 
-						class="hidden sm:flex items-center justify-center w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 border-2 rounded-full shadow-md fixed left-4 top-1/2 transform -translate-y-1/2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-					>
+						class="hidden sm:flex items-center justify-center w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 
+							border-2 border-[#a1ce9f] rounded-full shadow-md fixed left-4 top-1/2 transform -translate-y-1/2 
+							bg-white text-[#a1ce9f] 
+							transition-all duration-300 ease-in-out 
+							hover:bg-[#f0f7ef] hover:shadow-lg 
+							disabled:opacity-50 disabled:cursor-not-allowed">
 						<i class="fas fa-chevron-left text-lg md:text-xl lg:text-2xl"></i>
 					</button>
 
+					<!-- Next Button -->
 					<button 
 						@click="navigatePage('next')" 
 						:disabled="currentPage === PAGES.length - 1" 
-						class="hidden sm:flex items-center justify-center w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 border-2 rounded-full shadow-md fixed right-4 top-1/2 transform -translate-y-1/2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-					>
+						class="hidden sm:flex items-center justify-center w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 
+							border-2 border-[#a1ce9f] rounded-full shadow-md fixed right-4 top-1/2 transform -translate-y-1/2 
+							bg-white text-[#a1ce9f] 
+							transition-all duration-300 ease-in-out 
+							hover:bg-[#f0f7ef] hover:shadow-lg 
+							disabled:opacity-50 disabled:cursor-not-allowed">
 						<i class="fas fa-chevron-right text-lg md:text-xl lg:text-2xl"></i>
 					</button>
 				</section>
@@ -83,7 +97,7 @@ const BookDetailComponent = {
             <!-- Table of Contents -->
             <div 
                 :class="{'translate-x-0': isTableOfContentsOpen, 'translate-x-full': !isTableOfContentsOpen}" 
-                class="fixed inset-y-0 right-0 z-30 w-80 shadow-lg border-l transform transition-transform duration-300 bg-white"
+                class="fixed bg-white text-black inset-y-0 right-0 z-30 w-80 shadow-lg border-l transform transition-transform duration-300 bg-white"
             >
                 <!-- Header -->
                 <div class="p-4 flex justify-between items-center border-b">
@@ -113,7 +127,7 @@ const BookDetailComponent = {
 			<!-- Music Modal -->
 			<div
 				v-if="isMusicModalOpen"
-				class="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50"
+				class="fixed bg-white text-black inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50"
 				@click.self="closeMenu('musicModal')"
 			>
 				<div class="relative w-96 p-6 rounded-2xl shadow-xl bg-white" @click.stop>
@@ -196,7 +210,7 @@ const BookDetailComponent = {
 			</div>
     
 			<!-- Settings Modal -->
-			<div v-if="isSettingsModalOpen" class="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50" @click.self="closeMenu('settingsModal')">
+			<div v-if="isSettingsModalOpen" class="fixed bg-white text-black inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50" @click.self="closeMenu('settingsModal')">
 				<div class="relative w-96 p-6 rounded-lg shadow-xl bg-white" @click.stop>
 					<!-- Header -->
 					<div class="flex items-center justify-between mb-4">
@@ -235,13 +249,17 @@ const BookDetailComponent = {
 							<div class="flex items-center space-x-2 flex-grow justify-center">
 								<button 
 									@click="changeFontSize(-1)" 
-									class="px-4 py-1 border border-gray-300 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 transition-all">
+									class="px-4 py-1 border-2 border-[#a1ce9f] rounded-lg bg-white text-[#a1ce9f] 
+										shadow-md transition duration-300 ease-in-out 
+										hover:bg-[#f0f7ef] hover:shadow-lg">
 									-
 								</button>
 								<span class="text-lg font-semibold">{{ settings.fontSize }}</span>
 								<button 
 									@click="changeFontSize(1)" 
-									class="px-4 py-1 border border-gray-300 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 transition-all">
+									class="px-4 py-1 border-2 border-[#a1ce9f] rounded-lg bg-white text-[#a1ce9f] 
+										shadow-md transition duration-300 ease-in-out 
+										hover:bg-[#f0f7ef] hover:shadow-lg">
 									+
 								</button>
 							</div>
@@ -252,7 +270,9 @@ const BookDetailComponent = {
 					<div class="flex justify-end">
 						<button 
 							@click="saveThemeSettings" 
-							class="px-6 py-2 font-medium rounded-lg border-2">
+							class="px-6 py-2 font-medium rounded-lg border-2 border-[#a1ce9f] bg-[#a1ce9f] text-white 
+								shadow-md transition duration-300 ease-in-out 
+								hover:bg-[#89a88b] hover:shadow-lg">
 							Lưu cài đặt
 						</button>
 					</div>
@@ -263,7 +283,7 @@ const BookDetailComponent = {
 
 			<!-- Context Menu -->
 			<div v-if="contextMenu.visible" 
-				class="absolute z-50 bg-white shadow-xl rounded-lg overflow-hidden w-56"
+				class="absolute z-50 bg-white text-black shadow-xl rounded-lg overflow-hidden w-56"
 				:style="{ top: contextMenu.y + 'px', left: contextMenu.x + 'px' }">
 				
 				<!-- Highlight color buttons (show only when text is selected) -->
@@ -527,18 +547,28 @@ const BookDetailComponent = {
 
 		openContextMenu(event) {
 			event.preventDefault();
-		
+
 			const selection = window.getSelection();
-		
+
 			const hasSelection = !selection.isCollapsed && selection.toString().trim() !== '';
-			this.contextMenu = {
-				visible: true,
-				x: event.pageX,
-				y: event.pageY,
-				selection: hasSelection ? selection : null
-			};
+
+			if (hasSelection) {
+				this.contextMenu = {
+					visible: true,
+					x: event.pageX,
+					y: event.pageY,
+					selection: selection
+				};
+			} else {
+				this.contextMenu = {
+					visible: false,
+					x: 0,
+					y: 0,
+					selection: null
+				};
+			}
 		},
-		
+
 		closeContextMenu() {
 			this.contextMenu.visible = false;
 		},
@@ -802,6 +832,7 @@ const BookDetailComponent = {
 
 			document.addEventListener('click', this.closeContextMenu);
 			document.addEventListener('mouseup', this.openContextMenu);
+			
 		} catch (error) {
 			console.error('Initialization error:', error);
 		}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="default">
 
 <head>
 	<meta charset="UTF-8">
@@ -30,78 +30,40 @@
 	<!-- External CSS -->
 	<link href="./public/styles/style.css" rel="stylesheet">
 
-	<script>
-		tailwind.config = {
-			theme: {
-				extend: {
-					fontFamily: {
-						custom: 'var(--font-family)',
-					},
-				},
-			},
-		}
-	</script>
-
 	<style>
-		:root {
-			--font-family: 'Arial', sans-serif;
-			--font-size: 16px;
-			--bg-main-color: #A1CE9F;
-			--text-main-color: #000000;
-			--bg-hf-color: #346C69;
-			--text-hf-color: #FFFEF4;
-			--bg-button-color: #89A8B2;
-			--text-button-color: #000000;
+		@layer base {
+			:root {
+				--bg-hf-color: #346C69;
+				--text-hf-color: #FFFEF4;
+			}
+
+			html[data-theme="default"] {
+				--bg-main-color: #A1CE9F;
+				--text-main-color: #000000;
+			}
+
+			html[data-theme="light"] {
+				--bg-main-color: #f0f0f0;
+				--text-main-color: #333333;
+			}
+
+			html[data-theme="dark"] {
+				--bg-main-color: #333333;
+				--text-main-color: #ffffff;
+			}
 		}
 
 		body {
-			font-family: var(--font-family);
-			font-size: var(--font-size);
+			background-color: var(--bg-main-color);
+			color: var(--text-main-color);
+			font-family: 'Arial', sans-serif;
+			font-size: 16px;
 		}
 
-		/* Default Theme */
-		.default {
-			--bg-main-color: #A1CE9F;
-			--text-main-color: #000000;
-			--bg-hf-color: #346C69;
-			--text-hf-color: #FFFEF4;
-			--bg-button-color: #89A8B2;
-			--text-button-color: #000000;
-		}
-
-		/* Light Theme */
-		.light {
-			--bg-main-color: #f0f0f0;
-			--text-main-color: #333333;
-			--bg-hf-color: #f9f9f9;
-			--text-hf-color: #333333;
-			--bg-button-color: #dcdcdc;
-			--text-button-color: #333333;
-		}
-
-		/* Dark Theme */
-		.dark {
-			--bg-main-color: #333333;
-			--text-main-color: #ffffff;
-			--bg-hf-color: #111111;
-			--text-hf-color: #ffffff;
-			--bg-button-color: #555555;
-			--text-button-color: #ffffff;
-		}
-
-		select {
-			appearance: none;
-		}
-
-		.overlay {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: rgba(0, 0, 0, 0.5);
-			display: none;
-			z-index: 9999;
+		header,
+		footer {
+			background-color: var(--bg-hf-color);
+			color: var(--text-hf-color);
 		}
 	</style>
 </head>
