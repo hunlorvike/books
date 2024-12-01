@@ -4,7 +4,7 @@ const BookPreviewComponent = {
     name: "BookPreviewComponent",
 
     template: `
-        <section class="min-h-screen transition-all duration-300">
+        <section class="min-h-screen transition-all duration-300 ">
             <header class="p-2 xs:p-3 sm:p-4 shadow-md fixed top-0 left-0 w-full z-10">
                 <div class="container mx-auto flex items-center justify-between h-10 xs:h-12 sm:h-14">
                     <h1 class="text-[1em] xs:text-[1.5em] sm:text-[1.75em] font-bold leading-tight">
@@ -16,9 +16,9 @@ const BookPreviewComponent = {
             </header>
 
             <!-- Main Content -->
-            <main class="max-w-7xl mx-auto px-1 xs:px-2 sm:px-4 lg:px-8 py-4 xs:py-8 lg:py-12" style="padding-top: 150px;">
+            <main class="max-w-7xl mx-auto px-1 xs:px-2 sm:px-4 lg:px-8 py-4 xs:py-8 lg:py-12 " style="padding-top: 150px;">
                 <!-- Book Details -->
-                <div class="rounded-2xl shadow-lg overflow-hidden">
+                <div class="rounded-2xl shadow-lg overflow-hidden bg-[#FFFEE4] text-black">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 xs:gap-6 lg:gap-8 p-2 xs:p-4 sm:p-8">
                         <div class="col-span-12 lg:col-span-5 flex justify-center items-center">
                             <a data-fancybox="gallery" href="./public/images/covers/anh_bia_cndl1.png">
@@ -78,39 +78,51 @@ const BookPreviewComponent = {
                                 <!-- Read Button -->
                                 <router-link 
                                     to="/detail" 
-                                    class="w-full sm:w-auto flex-grow sm:flex-grow-0 px-3 xs:px-4 py-2 sm:px-6 sm:py-3  border-2 font-medium rounded-lg">
+                                    class="w-full sm:w-auto flex-grow sm:flex-grow-0 px-4 py-2 sm:px-6 sm:py-3 text-white bg-[#a1ce9f] 
+                                        font-medium rounded-lg border-2 border-[#a1ce9f] text-center shadow-md 
+                                        transition-all duration-300 ease-in-out hover:bg-[#89a88b] hover:shadow-lg">
                                     ĐỌC SÁCH
                                 </router-link>
 
                                 <!-- Favorite Button -->
                                 <button 
                                     @click="toggleFavorite" 
-                                    class="w-full sm:w-auto flex-grow sm:flex-grow-0 px-3 xs:px-4 py-2 sm:px-6 sm:py-3 border-2 font-medium rounded-lg flex items-center gap-2">
-                                    <i 
-                                        :class="isFavorite ? 'fas fa-heart' : 'far fa-heart'">
-                                    </i> 
+                                    class="w-full sm:w-auto flex-grow sm:flex-grow-0 px-4 py-2 sm:px-6 sm:py-3 bg-white text-[#a1ce9f] 
+                                        font-medium rounded-lg border-2 border-[#a1ce9f] flex items-center gap-2 justify-center 
+                                        shadow-md transition-all duration-300 ease-in-out hover:bg-[#f0f7ef] hover:shadow-lg">
+                                    <i :class="isFavorite ? 'fas fa-heart text-[#a1ce9f]' : 'far fa-heart text-gray-400'"></i>
                                     <span>{{ isFavorite ? 'Đã yêu thích' : 'Yêu thích' }}</span>
                                 </button>
 
                                 <!-- Share Button -->
                                 <button 
                                     @click="shareOnFacebook" 
-                                    class="w-full sm:w-auto flex-grow sm:flex-grow-0 px-3 xs:px-4 py-2 sm:px-6 sm:py-3 border-2 font-medium rounded-lg flex items-center gap-2">
-                                    <i class="fas fa-share"></i> Chia sẻ
+                                    class="w-full sm:w-auto flex-grow sm:flex-grow-0 px-4 py-2 sm:px-6 sm:py-3 bg-white text-[#a1ce9f] 
+                                        font-medium rounded-lg border-2 border-[#a1ce9f] flex items-center gap-2 justify-center 
+                                        shadow-md transition-all duration-300 ease-in-out hover:bg-[#f0f7ef] hover:shadow-lg">
+                                    <i class="fas fa-share"></i>
+                                    <span>Chia sẻ</span>
                                 </button>
                             </div>
+
                         </div>
                     </div>
                 </div>
 
                 <!-- Related Books Section -->
-                <div class="mt-6 xs:mt-12 rounded-2xl shadow-lg p-4 xs:p-6 lg:p-8">
-                    <h2 class="text-base xs:text-lg sm:text-2xl text-center font-bold mb-4 xs:mb-8 text-gray-900">SÁCH CÙNG THỂ LOẠI</h2>
+                <div class="mt-6 xs:mt-12 rounded-2xl shadow-lg p-4 xs:p-6 lg:p-8 bg-[#FFFEE4] text-black">
+                    <h2 class="text-base xs:text-lg sm:text-2xl text-center font-bold mb-4 xs:mb-8 text-gray-900">
+                        SÁCH CÙNG THỂ LOẠI
+                    </h2>
+                    
                     <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 xs:gap-6">
                         <div 
                             v-for="book in BOOK_RELATEDS" 
                             :key="book.id" 
-                            class="flex flex-col items-center p-2 xs:p-4 bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transform transition duration-300 ease-in-out hover:shadow-xl hover:scale-105">
+                            class="flex flex-col items-center p-2 xs:p-4 bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden 
+                                transform transition duration-300 ease-in-out hover:shadow-xl hover:scale-105">
+                            
+                            <!-- Book Image -->
                             <img 
                                 :src="book.image" 
                                 alt="Book Image" 
@@ -176,6 +188,8 @@ const BookPreviewComponent = {
 
     beforeDestroy() {
         window.removeEventListener("resize", this.checkScreenSize);
+
+        Fancybox.destroy();
     },
 
     methods: {

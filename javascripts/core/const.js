@@ -17,7 +17,7 @@ const FONT_OPTIONS = [
 const THEME_OPTIONS = [
 	{ value: 'default', label: 'Mặc định' },
 	{ value: 'light', label: 'Trắng' },
-	{ value: 'black', label: 'Đen' },
+	{ value: 'dark', label: 'Đen' },
 ];
 
 const HIGHLIGHT_COLORS = [
