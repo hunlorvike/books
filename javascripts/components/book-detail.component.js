@@ -359,7 +359,10 @@ const BookDetailComponent = {
 			currentTime: 0,
 			duration: 0,
 			progress: 0,
-			swiperInstance: null, 
+			swiperInstance: null,
+			touchTimer: null,
+			touchLongPress: false,
+			touchStartEvent: null
 		};
 	},
 
@@ -379,21 +382,21 @@ const BookDetailComponent = {
 				this.swiperInstance.destroy(true, true);
 				this.swiperInstance = null;
 			}
-	
+
 			this.$nextTick(() => {
 				const swiperContainer = this.$refs.contentRef.querySelector('.swiper-container');
 				const swiperWrapper = swiperContainer?.querySelector('.swiper-wrapper');
-		
+
 				if (!swiperContainer || !swiperWrapper) {
 					return;
 				}
-			
+
 				this.swiperInstance = new Swiper('.swiper-container', {
 					loop: false,
 					pagination: {
 						el: '.swiper-pagination',
 						clickable: true,
-					},		
+					},
 					autoplay: {
 						delay: 3000,
 						disableOnInteraction: false,
@@ -581,11 +584,21 @@ const BookDetailComponent = {
 
 			const hasSelection = !selection.isCollapsed && selection.toString().trim() !== '';
 
+			let x, y;
+			if (event.type === 'touchstart' || event.type === 'touchend') {
+				const touch = event.changedTouches[0];
+				x = touch.pageX;
+				y = touch.pageY;
+			} else {
+				x = event.pageX;
+				y = event.pageY;
+			}
+
 			if (hasSelection) {
 				this.contextMenu = {
 					visible: true,
-					x: event.pageX,
-					y: event.pageY,
+					x: x,
+					y: y,
 					selection: selection
 				};
 			} else {
@@ -842,7 +855,25 @@ const BookDetailComponent = {
 
 		clearSavedReadingPosition() {
 			localStorage.removeItem('readingPosition');
+		},
+
+		startTouchTimer(event) {
+			this.touchStartEvent = event;
+
+			this.touchTimer = setTimeout(() => {
+				this.touchLongPress = true;
+			}, 500);
+		},
+
+		endTouchTimer(event) {
+			clearTimeout(this.touchTimer);
+
+			if (this.touchLongPress) {
+				this.touchLongPress = false;
+				this.openContextMenu(this.touchStartEvent || event);
+			}
 		}
+
 
 	},
 
@@ -850,12 +881,11 @@ const BookDetailComponent = {
 		currentPage: {
 			handler() {
 				this.loadHighlights();
-				this.initializeSwiper(); 
+				this.initializeSwiper();
 			},
 			immediate: true,
 		},
 	},
-
 
 	async mounted() {
 		try {
@@ -867,6 +897,8 @@ const BookDetailComponent = {
 
 			document.addEventListener('click', this.closeContextMenu);
 			document.addEventListener('mouseup', this.openContextMenu);
+			document.addEventListener('touchstart', this.startTouchTimer);
+			document.addEventListener('touchend', this.endTouchTimer);
 		} catch (error) {
 			console.error('Initialization error:', error);
 		}
