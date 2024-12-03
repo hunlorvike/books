@@ -52,6 +52,15 @@ const BookDetailComponent = {
 								hover:bg-[#f0f7ef] hover:shadow-lg">
 							<i class="fas fa-bars"></i>
 						</button>
+
+						<button 
+							@click="toggleMenu('notesPanel')" 
+							class="p-2 sm:p-3 rounded-lg border-2 border-[#a1ce9f] bg-white text-[#a1ce9f] 
+							shadow-md transition duration-300 ease-in-out 
+							hover:bg-[#f0f7ef] hover:shadow-lg"
+						>
+							<i class="fas fa-sticky-note"></i>
+						</button>
 					</div>
 				</div>
 			</header>
@@ -93,6 +102,85 @@ const BookDetailComponent = {
 					</button>
 				</section>
 			</main>
+
+			<!-- Notes Panel -->
+			<div 
+				:class="{'translate-x-0': isNotesPanelOpen, 'translate-x-full': !isNotesPanelOpen}" 
+				class="fixed bg-white text-black inset-y-0 right-0 z-30 w-80 shadow-xl border-l transform transition-transform duration-300 overflow-y-auto"
+			>
+				<!-- Header -->
+				<div class="p-4 flex justify-between items-center border-b bg-gray-100">
+					<h2 class="text-[1.25em] font-bold text-gray-800">Ghi chú</h2>
+					<button 
+						class="text-gray-500 hover:text-red-500 transition-all text-lg"
+						@click="closeMenu('notesPanel')"
+					>
+						<i class="fas fa-times"></i>
+					</button>
+				</div>
+
+				<ul class="divide-y divide-gray-200 p-4 space-y-2">
+					<li 
+						v-for="(item, index) in notes" 
+						:key="index" 
+						class="flex items-center px-3 rounded-lg hover:bg-gray-100 transition-colors space-x-4"
+					>
+						<!-- Note Title -->
+						<p 
+							class="text-gray-800 font-medium truncate flex-grow"
+							:title="item"
+						>
+							{{ item }}
+						</p>
+						<!-- Delete Button -->
+						<button 
+							class="flex items-center justify-center px-3 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-700 hover:text-white transition-all"
+							@click="deleteNote(index)"
+						>
+							<i class="fas fa-trash-alt"></i>
+							<span class="ml-2 hidden sm:inline">Xóa</span>
+						</button>
+					</li>
+				</ul>
+
+				<!-- Add Note Section -->
+				<div class="p-4 border-t bg-gray-50">
+					<div v-if="isAddingNote">
+						<textarea 
+							v-model="note"
+							class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-200 resize-none text-gray-800 placeholder-gray-400"
+							placeholder="Nhập ghi chú mới..."
+						></textarea>
+						<div class="flex mt-3 space-x-2">
+							<button 
+								class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 shadow-sm transition"
+								@click="saveCurrentNote"
+							>
+								Lưu
+							</button>
+							<button 
+								class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 shadow-sm transition"
+								@click="cancelAddNote"
+							>
+								Hủy
+							</button>
+						</div>
+					</div>
+					<div v-else>
+						<button 
+							class="w-full px-6 py-2 font-medium rounded-lg border-2 border-[#a1ce9f] bg-[#a1ce9f] text-white 
+							shadow-md transition duration-300 ease-in-out 
+							hover:bg-[#89a88b] hover:shadow-lg"
+							@click="isAddingNote = true"
+						>
+							Thêm ghi chú mới
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div v-if="isNotesPanelOpen" class="fixed inset-0 bg-black bg-opacity-30 z-20" @click="closeMenu('notesPanel');"></div>
+
 
             <!-- Table of Contents -->
             <div 
@@ -362,7 +450,11 @@ const BookDetailComponent = {
 			swiperInstance: null,
 			touchTimer: null,
 			touchLongPress: false,
-			touchStartEvent: null
+			touchStartEvent: null,
+			isAddingNote: false,
+			isNotesPanelOpen: false,
+			notes: [],
+			note: '',
 		};
 	},
 
@@ -872,8 +964,46 @@ const BookDetailComponent = {
 				this.touchLongPress = false;
 				this.openContextMenu(this.touchStartEvent || event);
 			}
-		}
+		},
 
+		loadNotes(){
+			const storedNotes = localStorage.getItem('notes');
+
+			if (storedNotes) {
+				this.notes = JSON.parse(storedNotes);
+			}
+		},
+
+		saveCurrentNote() {
+			if (this.note.trim() === '') {
+				alert('Nội dung ghi chú không được để trống!');
+				return;
+			}
+
+			this.notes.push(this.note);
+
+			localStorage.setItem('notes', JSON.stringify(this.notes));
+
+			this.resetCurrentNote();
+		},
+
+		deleteNote(index) {
+			if (confirm('Bạn có chắc chắn muốn xóa ghi chú này?')) {
+				this.notes.splice(index, 1);
+	
+				// Cập nhật localStorage
+				localStorage.setItem('notes', JSON.stringify(this.notes));
+			}
+		},
+
+		cancelAddNote() {
+			this.isAddingNote = false;
+			this.resetCurrentNote();
+		},
+
+		resetCurrentNote() {
+			this.note = ''
+		}
 
 	},
 
@@ -893,6 +1023,7 @@ const BookDetailComponent = {
 
 			this.$nextTick(() => {
 				this.loadSavedReadingPosition();
+				this.loadNotes();
 			});
 
 			document.addEventListener('click', this.closeContextMenu);
@@ -908,6 +1039,10 @@ const BookDetailComponent = {
 		document.removeEventListener('mouseup', this.openContextMenu);
 		document.removeEventListener('click', this.closeContextMenu);
 		this.cleanup();
+
+		if (this.touchTimer) {
+			clearTimeout(this.touchTimer);
+		}
 	}
 };
 
