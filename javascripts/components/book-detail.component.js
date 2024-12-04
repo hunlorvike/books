@@ -1,5 +1,4 @@
 import { PAGES, FONT_OPTIONS, THEME_OPTIONS, HIGHLIGHT_COLORS, SONG_OPTIONS } from '../core/const.js';
-import { highlightDB } from '../core/db.js';
 
 const BookDetailComponent = {
 	name: 'BookDetailComponent',
@@ -103,38 +102,38 @@ const BookDetailComponent = {
 				</section>
 			</main>
 
-			<!-- Notes Panel -->
 			<div 
 				:class="{'translate-x-0': isNotesPanelOpen, 'translate-x-full': !isNotesPanelOpen}" 
 				class="fixed bg-white text-black inset-y-0 right-0 z-30 w-80 shadow-xl border-l transform transition-transform duration-300 overflow-y-auto"
 			>
 				<!-- Header -->
-				<div class="p-4 flex justify-between items-center border-b bg-gray-100">
-					<h2 class="text-[1.25em] font-bold text-gray-800">Ghi chú</h2>
+				<div class="p-4 flex justify-between items-center border-b bg-gray-50">
+					<h2 class="text-lg font-semibold text-gray-900">Ghi chú</h2>
 					<button 
-						class="text-gray-500 hover:text-red-500 transition-all text-lg"
+						class="text-gray-500 hover:text-gray-700 transition-all text-lg"
 						@click="closeMenu('notesPanel')"
 					>
 						<i class="fas fa-times"></i>
 					</button>
 				</div>
 
-				<ul class="divide-y divide-gray-200 p-4 space-y-2">
+				<ul class="divide-y divide-gray-200 px-4 py-2 space-y-3">
 					<li 
 						v-for="(item, index) in notes" 
 						:key="index" 
-						class="flex items-center px-3 rounded-lg hover:bg-gray-100 transition-colors space-x-4"
+						class="flex items-center px-3 py-2 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow"
 					>
-						<!-- Note Title -->
+						<!-- Ghi chú -->
 						<p 
-							class="text-gray-800 font-medium truncate flex-grow"
-							:title="item"
+							class="text-gray-700 font-medium flex-grow capitalize"
+							:title="item.content"
 						>
-							{{ item }}
+							{{ item.content }}
 						</p>
-						<!-- Delete Button -->
+
+						<!-- Nút xóa -->
 						<button 
-							class="flex items-center justify-center px-3 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-700 hover:text-white transition-all"
+							class="flex items-center justify-center px-3 py-1.5 border border-[#a1ce9f] text-[#a1ce9f] rounded-md hover:bg-[#a1ce9f] hover:text-white transition-all"
 							@click="deleteNote(index)"
 						>
 							<i class="fas fa-trash-alt"></i>
@@ -142,45 +141,9 @@ const BookDetailComponent = {
 						</button>
 					</li>
 				</ul>
-
-				<!-- Add Note Section -->
-				<div class="p-4 border-t bg-gray-50">
-					<div v-if="isAddingNote">
-						<textarea 
-							v-model="note"
-							class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-200 resize-none text-gray-800 placeholder-gray-400"
-							placeholder="Nhập ghi chú mới..."
-						></textarea>
-						<div class="flex mt-3 space-x-2">
-							<button 
-								class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 shadow-sm transition"
-								@click="saveCurrentNote"
-							>
-								Lưu
-							</button>
-							<button 
-								class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 shadow-sm transition"
-								@click="cancelAddNote"
-							>
-								Hủy
-							</button>
-						</div>
-					</div>
-					<div v-else>
-						<button 
-							class="w-full px-6 py-2 font-medium rounded-lg border-2 border-[#a1ce9f] bg-[#a1ce9f] text-white 
-							shadow-md transition duration-300 ease-in-out 
-							hover:bg-[#89a88b] hover:shadow-lg"
-							@click="isAddingNote = true"
-						>
-							Thêm ghi chú mới
-						</button>
-					</div>
-				</div>
 			</div>
 
 			<div v-if="isNotesPanelOpen" class="fixed inset-0 bg-black bg-opacity-30 z-20" @click="closeMenu('notesPanel');"></div>
-
 
             <!-- Table of Contents -->
             <div 
@@ -389,8 +352,15 @@ const BookDetailComponent = {
 						</button>
 					</div>
 				</div>
-				
-				<!-- Save Reading Position Option -->
+
+				<button 
+					@click="saveNote" 
+					class="w-full px-4 py-3 text-left hover:bg-gray-100 transition-colors duration-200 flex items-center space-x-3"
+				>
+					<i class="fas fa-pencil-alt text-gray-500 hover:text-gray-700 transition-colors duration-200"></i>
+					<span class="text-gray-600 hover:text-gray-800 text-sm font-medium transition-colors duration-200">Thêm ghi chú</span>
+				</button>
+
 				<button 
 					@click="saveReadingPosition" 
 					class="w-full px-4 py-3 text-left hover:bg-gray-100 transition-colors duration-200 flex items-center space-x-3"
@@ -546,15 +516,18 @@ const BookDetailComponent = {
 
 		saveHighlights() {
 			localStorage.setItem('highlights', JSON.stringify(this.highlights));
+			this.loadHighlights();
 		},
 
-		async loadHighlights() {
-			try {
-				const pageHighlights = await highlightDB.getHighlights(this.currentPage);
-				this.highlights = pageHighlights;
-			} catch (error) {
-				console.error('Error loading highlights:', error);
+		loadHighlights() {
+			const storedHighlights = localStorage.getItem('highlights');
+			if (!storedHighlights) {
+				this.highlights = [];
+				return;
 			}
+
+			const allHighlights = JSON.parse(storedHighlights);
+			this.highlights = allHighlights.filter(h => h.pageIndex === this.currentPage);
 		},
 
 		applyHighlights(content) {
@@ -602,7 +575,7 @@ const BookDetailComponent = {
 
 					const highlightSpan = document.createElement('span');
 					highlightSpan.classList.add('highlight', `bg-[${highlight.color}]`, 'text-black');
-					highlightSpan.setAttribute('id', 'highlight-id');
+					highlightSpan.setAttribute('id', `${highlight.id}`);
 					highlightSpan.textContent = range.toString();
 
 					range.deleteContents();
@@ -612,38 +585,57 @@ const BookDetailComponent = {
 			return tempDiv.innerHTML;
 		},
 
-		async addHighlight(color) {
+		addHighlight(color) {
 			const selection = window.getSelection();
 			if (selection.isCollapsed) return;
 
 			const range = selection.getRangeAt(0);
 
-			const content = this.$refs.contentRef;
+			const startContainer = range.startContainer;
+			const endContainer = range.endContainer;
 
+			if (startContainer.nodeType === Node.TEXT_NODE) {
+				let startOffset = range.startOffset;
+				const text = startContainer.textContent;
+
+				while (startOffset > 0 && !/\s/.test(text[startOffset - 1])) {
+					startOffset--;
+				}
+				range.setStart(startContainer, startOffset);
+			}
+
+			if (endContainer.nodeType === Node.TEXT_NODE) {
+				let endOffset = range.endOffset;
+				const text = endContainer.textContent;
+
+				while (endOffset < text.length && !/\s/.test(text[endOffset])) {
+					endOffset++;
+				}
+				range.setEnd(endContainer, endOffset);
+			}
+
+			const content = this.$refs.contentRef;
 			const startOffset = this.getTextOffset(content, range.startContainer, range.startOffset);
 			const endOffset = this.getTextOffset(content, range.endContainer, range.endOffset);
 
-			let highlightToSave = {
+			const highlight = {
 				id: Date.now().toString(36) + Math.random().toString(36).substr(2),
-				content: selection.toString().trim(),
+				content: range.toString().trim(),
 				color: color,
 				pageIndex: this.currentPage,
 				startOffset,
 				endOffset,
 			};
 
-			this.highlights.push(highlightToSave);
+			this.highlights.push(highlight);
 
-			try {
-				await highlightDB.saveHighlight(highlightToSave);
-			} catch (error) {
-				console.error('Error saving highlight:', error);
-			} finally {
-				this.closeContextMenu();
-			}
+			this.saveHighlights();
+
+			this.closeContextMenu();
+
 		},
 
-		async removeHighlight() {
+		removeHighlight() {
 			const selection = window.getSelection();
 
 			if (selection.isCollapsed || selection.toString().trim() === '') {
@@ -654,19 +646,11 @@ const BookDetailComponent = {
 			const highlightElement = selection.anchorNode.parentElement.closest('.highlight');
 			if (!highlightElement) return;
 
-			const highlightId = highlightElement.id;
+			this.highlights = this.highlights.filter(h => h.id !== highlightElement.id);
 
-			try {
-				await highlightDB.deleteHighlight(highlightId);
+			this.saveHighlights();
 
-				this.highlights = this.highlights.filter(h => h.id !== highlightId);
-
-				highlightElement.outerHTML = highlightElement.textContent;
-			} catch (error) {
-				console.error('Lỗi xóa highlight:', error);
-			} finally {
-				this.closeContextMenu();
-			}
+			this.closeContextMenu();
 		},
 
 		openContextMenu(event) {
@@ -966,7 +950,7 @@ const BookDetailComponent = {
 			}
 		},
 
-		loadNotes(){
+		loadNotes() {
 			const storedNotes = localStorage.getItem('notes');
 
 			if (storedNotes) {
@@ -974,36 +958,29 @@ const BookDetailComponent = {
 			}
 		},
 
-		saveCurrentNote() {
-			if (this.note.trim() === '') {
-				alert('Nội dung ghi chú không được để trống!');
-				return;
-			}
+		saveNote() {
+			const selection = window.getSelection();
+			if (selection.isCollapsed) return;
 
-			this.notes.push(this.note);
+			const note = {
+				page: this.currentPage,
+				content: selection.toString(),
+			};
+
+			this.notes.push(note);
 
 			localStorage.setItem('notes', JSON.stringify(this.notes));
 
-			this.resetCurrentNote();
+			alert("Thêm ghi chú thành công!")
 		},
 
 		deleteNote(index) {
 			if (confirm('Bạn có chắc chắn muốn xóa ghi chú này?')) {
 				this.notes.splice(index, 1);
-	
-				// Cập nhật localStorage
+
 				localStorage.setItem('notes', JSON.stringify(this.notes));
 			}
 		},
-
-		cancelAddNote() {
-			this.isAddingNote = false;
-			this.resetCurrentNote();
-		},
-
-		resetCurrentNote() {
-			this.note = ''
-		}
 
 	},
 
@@ -1017,22 +994,17 @@ const BookDetailComponent = {
 		},
 	},
 
-	async mounted() {
-		try {
-			await highlightDB.openDatabase();
+	mounted() {
+		this.$nextTick(() => {
+			this.loadHighlights();
+			this.loadSavedReadingPosition();
+			this.loadNotes();
+		});
 
-			this.$nextTick(() => {
-				this.loadSavedReadingPosition();
-				this.loadNotes();
-			});
-
-			document.addEventListener('click', this.closeContextMenu);
-			document.addEventListener('mouseup', this.openContextMenu);
-			document.addEventListener('touchstart', this.startTouchTimer);
-			document.addEventListener('touchend', this.endTouchTimer);
-		} catch (error) {
-			console.error('Initialization error:', error);
-		}
+		document.addEventListener('click', this.closeContextMenu);
+		document.addEventListener('mouseup', this.openContextMenu);
+		document.addEventListener('touchstart', this.startTouchTimer);
+		document.addEventListener('touchend', this.endTouchTimer);
 	},
 
 	beforeDestroy() {
