@@ -637,22 +637,45 @@ const BookDetailComponent = {
 
 		removeHighlight() {
 			const selection = window.getSelection();
-
+		
 			if (selection.isCollapsed || selection.toString().trim() === '') {
 				this.contextMenu.visible = false;
 				return;
 			}
-
-			const highlightElement = selection.anchorNode.parentElement.closest('.highlight');
-			if (!highlightElement) return;
-
-			this.highlights = this.highlights.filter(h => h.id !== highlightElement.id);
-
+		
+			const range = selection.getRangeAt(0);
+		
+			const container = range.commonAncestorContainer;
+			const highlightsToRemove = [];
+			const walker = document.createTreeWalker(
+				container,
+				NodeFilter.SHOW_ELEMENT,
+				{
+					acceptNode: (node) => {
+						return node.classList.contains('highlight') ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+					}
+				}
+			);
+		
+			let currentNode = walker.nextNode();
+			while (currentNode) {
+				const highlightRange = document.createRange();
+				highlightRange.selectNodeContents(currentNode);
+				if (range.intersectsNode(currentNode)) {
+					highlightsToRemove.push(currentNode);
+				}
+				currentNode = walker.nextNode();
+			}
+		
+			highlightsToRemove.forEach(highlight => {
+				this.highlights = this.highlights.filter(h => h.id !== highlight.id);
+				highlight.replaceWith(...highlight.childNodes);
+			});
+		
 			this.saveHighlights();
-
 			this.closeContextMenu();
 		},
-
+		
 		openContextMenu(event) {
 			event.preventDefault();
 
