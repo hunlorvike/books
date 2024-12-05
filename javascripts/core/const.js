@@ -152,175 +152,216 @@ const PAGES = [
 
 	// Trang 4: Câu hỏi trắc nghiệm
 	{
-		title: 'Câu hỏi trắc nghiệm',
+		title: 'Câu hỏi trắc nghiệm về Văn hóa Việt Nam',
 		content: `
-			<div class="flex-grow p-4 sm:p-6 max-w-md sm:max-w-[1400px] mx-auto space-y-8">
-				<h2 class="text-[1.25em] sm:text-[1.5em] font-semibold text-center">Câu hỏi ôn tập</h2>
+			<div class="flex-grow p-4 sm:p-6 max-w-md sm:max-w-[1400px] mx-auto space-y-4">
+					<div class="text-center space-y-4">
+						<h2 class="text-2xl sm:text-3xl font-bold text-blue-800">Kiểm tra kiến thức Văn hóa Việt Nam</h2>
+						<p class="text-gray-600 text-sm sm:text-base">Hãy chọn đáp án đúng cho các câu hỏi sau</p>
+					</div>
 	
-				<!-- Câu hỏi 1 -->
-				<div class="mt-4">
-					<p class="text-[1em] sm:text-[1.125em] font-medium">
-						1. Huế từng là kinh đô của triều đại nào sau đây?
-					</p>
-					<form class="mt-2 space-y-2 question1">
-						<label class="block">
-							<input type="radio" name="question1" value="Tây Sơn" />
-							Tây Sơn
-						</label>
-						<label class="block">
-							<input type="radio" name="question1" value="Nguyễn" />
-							Nguyễn
-						</label>
-						<label class="block">
-							<input type="radio" name="question1" value="Lý" />
-							Lý
-						</label>
-					</form>
-				</div>
+					<!-- Câu hỏi 1 -->
+					<div class="mt-6 question-container bg-white rounded-lg shadow-md p-6" id="question1">
+						<p class="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+							1. Huế từng là kinh đô của triều đại nào sau đây?
+						</p>
+						<form class="space-y-3">
+							<div class="hover:bg-blue-50 p-2 rounded-md transition-colors">
+								<label class="flex items-center cursor-pointer">
+									<input type="radio" name="q1" value="Tây Sơn" class="mr-3 h-4 w-4 text-blue-600"/>
+									<span class="text-gray-700">Tây Sơn</span>
+								</label>
+							</div>
+							<div class="hover:bg-blue-50 p-2 rounded-md transition-colors">
+								<label class="flex items-center cursor-pointer">
+									<input type="radio" name="q1" value="Nguyễn" class="mr-3 h-4 w-4 text-blue-600"/>
+									<span class="text-gray-700">Nguyễn</span>
+								</label>
+							</div>
+							<div class="hover:bg-blue-50 p-2 rounded-md transition-colors">
+								<label class="flex items-center cursor-pointer">
+									<input type="radio" name="q1" value="Lý" class="mr-3 h-4 w-4 text-blue-600"/>
+									<span class="text-gray-700">Lý</span>
+								</label>
+							</div>
+						</form>
+						<div class="result mt-4"></div>
+					</div>
 	
-				<!-- Câu hỏi 2 -->
-				<div class="mt-4">
-					<p class="text-[1em] sm:text-[1.125em] font-medium">
-						2. Tên của loại hình âm nhạc cung đình đặc trưng của Huế là gì?
-					</p>
-					<form class="mt-2 space-y-2 question2">
-						<label class="block">
-							<input type="radio" name="question2" value="Nhã nhạc" />
-							Nhã nhạc
-						</label>
-						<label class="block">
-							<input type="radio" name="question2" value="Ca trù" />
-							Ca trù
-						</label>
-						<label class="block">
-							<input type="radio" name="question2" value="Hát chèo" />
-							Hát chèo
-						</label>
-					</form>
-				</div>
+					<!-- Câu hỏi 2 -->
+					<div class="question-container bg-white rounded-lg shadow-md p-6" id="question2">
+						<p class="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+							2. Tên của loại hình âm nhạc cung đình đặc trưng của Huế là gì?
+						</p>
+						<form class="space-y-3">
+							<div class="hover:bg-blue-50 p-2 rounded-md transition-colors">
+								<label class="flex items-center cursor-pointer">
+									<input type="radio" name="q2" value="Nhã nhạc" class="mr-3 h-4 w-4 text-blue-600"/>
+									<span class="text-gray-700">Nhã nhạc</span>
+								</label>
+							</div>
+							<div class="hover:bg-blue-50 p-2 rounded-md transition-colors">
+								<label class="flex items-center cursor-pointer">
+									<input type="radio" name="q2" value="Ca trù" class="mr-3 h-4 w-4 text-blue-600"/>
+									<span class="text-gray-700">Ca trù</span>
+								</label>
+							</div>
+							<div class="hover:bg-blue-50 p-2 rounded-md transition-colors">
+								<label class="flex items-center cursor-pointer">
+									<input type="radio" name="q2" value="Hát chèo" class="mr-3 h-4 w-4 text-blue-600"/>
+									<span class="text-gray-700">Hát chèo</span>
+								</label>
+							</div>
+						</form>
+						<div class="result mt-4"></div>
+					</div>
 	
-				<!-- Câu hỏi 3 -->
-				<div class="mt-4">
-					<p class="text-[1em] sm:text-[1.125em] font-medium">
-						3. Ai chịu trách nhiệm xuất bản cuốn sách điện tử này?
-					</p>
-					<form class="mt-2 space-y-2 question3">
-						<label class="block">
-							<input type="radio" name="question3" value="Nguyễn Văn Đủ" />
-							Nguyễn Văn Đủ
-						</label>
-						<label class="block">
-							<input type="radio" name="question3" value="Nguyễn Bảo Kỳ" />
-							Nguyễn Bảo Kỳ
-						</label>
-						<label class="block">
-							<input type="radio" name="question3" value="Phan Tiến Dũng" />
-							Phan Tiến Dũng
-						</label>
-					</form>
-				</div>
+					<!-- Câu hỏi 3 -->
+					<div class="question-container bg-white rounded-lg shadow-md p-6" id="question3">
+						<p class="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+							3. Những loại hình âm nhạc nào sau đây là của Việt Nam? (Chọn nhiều đáp án)
+						</p>
+						<form class="space-y-3">
+							<div class="hover:bg-blue-50 p-2 rounded-md transition-colors">
+								<label class="flex items-center cursor-pointer">
+									<input type="checkbox" name="q3" value="Nhã nhạc" class="mr-3 h-4 w-4 text-blue-600"/>
+									<span class="text-gray-700">Nhã nhạc</span>
+								</label>
+							</div>
+							<div class="hover:bg-blue-50 p-2 rounded-md transition-colors">
+								<label class="flex items-center cursor-pointer">
+									<input type="checkbox" name="q3" value="Ca trù" class="mr-3 h-4 w-4 text-blue-600"/>
+									<span class="text-gray-700">Ca trù</span>
+								</label>
+							</div>
+							<div class="hover:bg-blue-50 p-2 rounded-md transition-colors">
+								<label class="flex items-center cursor-pointer">
+									<input type="checkbox" name="q3" value="Hát chèo" class="mr-3 h-4 w-4 text-blue-600"/>
+									<span class="text-gray-700">Hát chèo</span>
+								</label>
+							</div>
+						</form>
+						<div class="result mt-4"></div>
+					</div>
 	
-				<!-- Nút Submit -->
-				<div class="mt-6">
-					<button id="submitQuiz" class="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600">
-						Submit
-					</button>
-				</div>
+					<!-- Câu hỏi 4 (mới) -->
+					<div class="question-container bg-white rounded-lg shadow-md p-6" id="question4">
+						<p class="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
+							4. Đâu là một trong những di sản văn hóa thế giới tại Huế?
+						</p>
+						<form class="space-y-3">
+							<div class="hover:bg-blue-50 p-2 rounded-md transition-colors">
+								<label class="flex items-center cursor-pointer">
+									<input type="radio" name="q4" value="Quần thể di tích Cố đô Huế" class="mr-3 h-4 w-4 text-blue-600"/>
+									<span class="text-gray-700">Quần thể di tích Cố đô Huế</span>
+								</label>
+							</div>
+							<div class="hover:bg-blue-50 p-2 rounded-md transition-colors">
+								<label class="flex items-center cursor-pointer">
+									<input type="radio" name="q4" value="Phố cổ Hội An" class="mr-3 h-4 w-4 text-blue-600"/>
+									<span class="text-gray-700">Phố cổ Hội An</span>
+								</label>
+							</div>
+							<div class="hover:bg-blue-50 p-2 rounded-md transition-colors">
+								<label class="flex items-center cursor-pointer">
+									<input type="radio" name="q4" value="Vịnh Hạ Long" class="mr-3 h-4 w-4 text-blue-600"/>
+									<span class="text-gray-700">Vịnh Hạ Long</span>
+								</label>
+							</div>
+						</form>
+						<div class="result mt-4"></div>
+					</div>
 	
-				<!-- Kết quả -->
-				<div id="quizResult" class="mt-4 space-y-4 hidden">
-					<!-- Nội dung kết quả sẽ được chèn vào đây -->
+					<!-- Nút chức năng -->
+					<div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+						<button id="submitQuiz" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg transform transition-all duration-200 shadow-lg
+							hover:bg-blue-700 hover:scale-105
+							disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:scale-100 disabled:hover:scale-100">
+							Nộp bài
+						</button>
+						<button id="resetQuiz" class="px-6 py-3 bg-gray-500 text-white font-medium rounded-lg transform transition-all duration-200 shadow-lg
+							hover:bg-gray-600 hover:scale-105">
+							Làm lại
+						</button>
+					</div>				
 				</div>
-			</div>
 	
 			<script>
-				// Use a unique namespace for variables
-				window.quiz = window.quiz || {};
-				
-				// Reset previous state if exists
-				if (window.quiz.cleanup) {
-				window.quiz.cleanup();
-				}
-				
-				// Store variables in namespace
-				window.quiz.correctAnswers = {
-				question1: "Nguyễn",
-				question2: "Nhã nhạc",
-				question3: "Nguyễn Văn Đủ"
+				const correctAnswers = {
+					q1: "Nguyễn",
+					q2: "Nhã nhạc",
+					q3: ["Nhã nhạc", "Ca trù", "Hát chèo"],
+					q4: "Quần thể di tích Cố đô Huế"
 				};
-
-				// Cleanup function
-				window.quiz.cleanup = function() {
-				if (window.quiz.submitHandler) {
-					document.getElementById("submitQuiz")?.removeEventListener("click", window.quiz.submitHandler);
+	
+				function displayResult(questionId, isCorrect, correctAnswer) {
+					const resultDiv = document.querySelector(\`#\${questionId} .result\`);
+					if (!resultDiv) return;
+	
+					const resultText = isCorrect 
+						? "Đúng!" 
+						: \`Sai. Đáp án đúng là: \${Array.isArray(correctAnswer) ? correctAnswer.join(", ") : correctAnswer}\`;
+					
+					resultDiv.innerHTML = \`<p class="\${isCorrect ? 'text-green-600' : 'text-red-600'} font-medium p-3 bg-opacity-10 \${isCorrect ? 'bg-green-100' : 'bg-red-100'} rounded-md">\${resultText}</p>\`;
 				}
-				};
+	
+				 document.getElementById("submitQuiz")?.addEventListener("click", (e) => {
+					// Disable submit button immediately
+					const submitButton = e.target;
+					submitButton.disabled = true;
 
-				// Submit handler
-				window.quiz.submitHandler = function() {
-				const resultContainer = document.getElementById("quizResult");
-				resultContainer.innerHTML = "";
-				resultContainer.classList.remove("hidden");
-
-				Object.keys(window.quiz.correctAnswers).forEach((question, index) => {
-					const selectedOption = document.querySelector(\`form.\${question} input[name="\${question}"]:checked\`);
-					const isCorrect = selectedOption && selectedOption.value === window.quiz.correctAnswers[question];
-
-					const result = document.createElement("p");
-					result.className = isCorrect
-					? "text-green-500 font-medium"
-					: "text-red-500 font-medium";
-					result.textContent = isCorrect
-					? \`Câu \${index + 1}: Đúng!\`
-					: \`Câu \${index + 1}: Sai. Đáp án đúng là "\${window.quiz.correctAnswers[question]}".\`;
-
-					document.querySelectorAll(\`form.\${question} label\`).forEach((label) => {
-					if (label.textContent.trim() === window.quiz.correctAnswers[question]) {
-						label.classList.add("text-blue-500");
-					}
+					// Process radio questions
+					['q1', 'q2', 'q4'].forEach(qName => {
+						const selected = document.querySelector(\`input[name="\${qName}"]:checked\`)?.value;
+						const isCorrect = selected === correctAnswers[qName];
+						displayResult(\`question\${qName.slice(1)}\`, isCorrect, correctAnswers[qName]);
 					});
 
-					resultContainer.appendChild(result);
+					// Process checkbox question
+					const q3Selected = Array.from(document.querySelectorAll('input[name="q3"]:checked'))
+						.map(input => input.value);
+					
+					const q3Correct = correctAnswers.q3.length === q3Selected.length &&
+						correctAnswers.q3.every(ans => q3Selected.includes(ans));
+					
+					displayResult('question3', q3Correct, correctAnswers.q3);
+
+					// Disable all inputs after submission
+					document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
+						input.disabled = true;
+					});
 				});
-				};
+	
+				 function resetQuiz() {
+					// Reset form elements
+					document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
+						input.checked = false;
+						input.disabled = false;  // Re-enable inputs
+					});
 
-				// Add event listener
-				document.getElementById("submitQuiz")?.addEventListener("click", window.quiz.submitHandler);
-			</script>`
-	},
+					// Clear results
+					document.querySelectorAll('.result').forEach(result => {
+						result.innerHTML = '';
+					});
 
-	// Trang 5: Slider ảnh
-	{
-		title: 'Slider ảnh với Swiper.js',
-		content: `
-			<div class="flex-grow p-4 sm:p-6 max-w-md sm:max-w-[1400px] mx-auto space-y-8">
-				<div class="mx-auto max-w-full sm:max-w-3xl lg:max-w-5xl xl:max-w-6xl">
-					<div class="swiper-container rounded-lg overflow-hidden shadow-lg bg-gray-50">
-						<div class="swiper-wrapper">
-							<div class="swiper-slide">
-								<div class="h-32 sm:h-40 md:h-48 lg:h-60">
-									<img src="./public/images/gallery/anh1.jpg" alt="Image 1" class="object-cover w-full h-full">
-								</div>
-							</div>
-							<div class="swiper-slide">
-								<div class="h-32 sm:h-40 md:h-48 lg:h-60">
-									<img src="./public/images/gallery/anh2.jpg" alt="Image 2" class="object-cover w-full h-full">
-								</div>
-							</div>
-							<div class="swiper-slide">
-								<div class="h-32 sm:h-40 md:h-48 lg:h-60">
-									<img src="./public/images/gallery/anh3.jpg" alt="Image 3" class="object-cover w-full h-full">
-								</div>
-							</div>
-							<div class="swiper-slide">
-								<div class="h-32 sm:h-40 md:h-48 lg:h-60">
-									<img src="./public/images/gallery/anh4.jpg" alt="Image 4" class="object-cover w-full h-full">
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>`
+					// Re-enable submit button
+					const submitButton = document.getElementById("submitQuiz");
+					if (submitButton) {
+						submitButton.disabled = false;
+					}
+
+					// Add fade effect
+					document.querySelectorAll('.question-container').forEach(question => {
+						question.style.opacity = '0.5';
+						setTimeout(() => {
+							question.style.opacity = '1';
+						}, 300);
+					});
+				}
+	
+				document.getElementById("resetQuiz")?.addEventListener("click", resetQuiz);
+			</script>
+		`
 	},
 
 	// Trang cuối: Nội dung chờ
