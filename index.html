@@ -1,20 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="default">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VUE SPA CDN</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="./public/images/covers/anh_bia_cndl2.png" type="image/png">
+	<title>Cẩm nang du lịch Huế</title>
+	<meta property="og:title" content="Cẩm Nang Du Lịch Huế" />
+	<meta property="og:description" content="Hãy khám phá cuốn sách thú vị này về Huế!" />
+	<meta property="og:image" content="./public/images/covers/anh_bia_cndl2.png" />
+	<meta property="og:url" content="./public/images/covers/anh_bia_cndl2.png" />
+	<meta property="og:type" content="article" />
 
+	<!-- Font Awesome CDN -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+	<!-- FancyBox CDN -->
+	<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+
+	<!-- Swiper CDN -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+	<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+	<!-- Vue.js 2 CDN -->
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.7.10/dist/vue.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue-router@3.5.3/dist/vue-router.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vuex@3.6.2/dist/vuex.min.js"></script>
+
+	<!-- Tailwind CSS CDN -->
+	<script src="https://cdn.tailwindcss.com"></script>
+
+	<!-- External CSS -->
+	<link href="./public/styles/style.css" rel="stylesheet">
+
+	<style>
+		@layer base {
+			:root {
+				--bg-hf-color: #346C69;
+				--text-hf-color: #FFFEF4;
+				--font-family: 'Arial', sans-serif;
+				--font-size: 16px;
+			}
+
+			html[data-theme="default"] {
+				--bg-main-color: #A1CE9F;
+				--text-main-color: #000000;
+			}
+
+			html[data-theme="light"] {
+				--bg-main-color: #f0f0f0;
+				--text-main-color: #333333;
+			}
+
+			html[data-theme="dark"] {
+				--bg-main-color: #333333;
+				--text-main-color: #ffffff;
+			}
+		}
+
+		body {
+			background-color: var(--bg-main-color);
+			color: var(--text-main-color);
+			font-family: var(--font-family);
+			font-size: var(--font-size);
+		}
+
+		header,
+		footer {
+			background-color: var(--bg-hf-color);
+			color: var(--text-hf-color);
+		}
+	</style>
 </head>
+
 <body>
-  <section id="app"></section>
+	<div id="app"></div>
+	<div class="overlay" id="overlay"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.10/dist/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue-router@3.5.3/dist/vue-router.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuex@3.6.2/dist/vuex.js"></script>
+	<script type="module" src="./javascripts/core/app.js"></script>
 
-  <script type="module" src="./assets/javascripts/app.js"></script>
+	<script>
+		document.addEventListener('copy', function (e) {
+			e.preventDefault();
+			alert("Sao chép văn bản bị vô hiệu hóa trên trang này!");
+		});
+
+		// // Show overlay when window loses focus
+		// window.addEventListener('blur', function () {
+		//     document.getElementById('overlay').style.display = 'block';
+		// });
+
+		// // Hide overlay when window gains focus
+		// window.addEventListener('focus', function () {
+		//     document.getElementById('overlay').style.display = 'none';
+		// });
+	</script>
 </body>
+
 </html>
