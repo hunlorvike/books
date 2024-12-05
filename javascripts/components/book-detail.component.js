@@ -1,5 +1,5 @@
 import { PAGES, FONT_OPTIONS, THEME_OPTIONS, HIGHLIGHT_COLORS, SONG_OPTIONS } from '../core/const.js';
-
+import { ScriptService } from '../core/utils.js';
 const BookDetailComponent = {
 	name: 'BookDetailComponent',
 
@@ -72,7 +72,7 @@ const BookDetailComponent = {
 			>
 				<!-- Content Section -->
 				<section class="p-4 w-full flex-grow flex sm:items-center justify-center relative">
-					<div ref="contentRef" class="flex justify-center text-[0.875em] sm:text-[1em] leading-relaxed" v-html="highlightedContent"></div>
+					<div ref="contentRef" class="flex justify-center text-[0.875em] sm:text-[1em] leading-relaxed" v-html="highlightedContent" v-execute-script></div>
 
 					<!-- Previous Button -->
 					<button 
@@ -430,12 +430,13 @@ const BookDetailComponent = {
 
 	computed: {
 		settings() {
-			return this.$store.getters.theme;
+			return this.$store.getters.theme; 34
 		},
 
 		highlightedContent() {
-			return this.applyHighlights(this.PAGES[this.currentPage].content);
-		},
+			const content = this.applyHighlights(this.PAGES[this.currentPage].content);
+			return content
+		}
 	},
 
 	methods: {
@@ -637,14 +638,14 @@ const BookDetailComponent = {
 
 		removeHighlight() {
 			const selection = window.getSelection();
-		
+
 			if (selection.isCollapsed || selection.toString().trim() === '') {
 				this.contextMenu.visible = false;
 				return;
 			}
-		
+
 			const range = selection.getRangeAt(0);
-		
+
 			const container = range.commonAncestorContainer;
 			const highlightsToRemove = [];
 			const walker = document.createTreeWalker(
@@ -656,7 +657,7 @@ const BookDetailComponent = {
 					}
 				}
 			);
-		
+
 			let currentNode = walker.nextNode();
 			while (currentNode) {
 				const highlightRange = document.createRange();
@@ -666,16 +667,16 @@ const BookDetailComponent = {
 				}
 				currentNode = walker.nextNode();
 			}
-		
+
 			highlightsToRemove.forEach(highlight => {
 				this.highlights = this.highlights.filter(h => h.id !== highlight.id);
 				highlight.replaceWith(...highlight.childNodes);
 			});
-		
+
 			this.saveHighlights();
 			this.closeContextMenu();
 		},
-		
+
 		openContextMenu(event) {
 			event.preventDefault();
 
@@ -1005,13 +1006,31 @@ const BookDetailComponent = {
 			}
 		},
 
+		handlePageChange() {
+			this.$nextTick(() => {
+				ScriptService.clearExecutedScripts();
+
+				this.loadHighlights();
+				this.loadSavedReadingPosition();
+				this.loadNotes();
+				this.initializeSwiper();
+
+				const content = this.$refs.contentRef;
+				if (content) {
+					ScriptService.executeScriptsInElement(content);
+				}
+			});
+		}
+
+
 	},
 
 	watch: {
 		currentPage: {
 			handler() {
-				this.loadHighlights();
-				this.initializeSwiper();
+				this.$nextTick(() => {
+					this.handlePageChange();
+				})
 			},
 			immediate: true,
 		},
@@ -1019,9 +1038,10 @@ const BookDetailComponent = {
 
 	mounted() {
 		this.$nextTick(() => {
-			this.loadHighlights();
-			this.loadSavedReadingPosition();
-			this.loadNotes();
+			const content = this.$refs.contentRef;
+			if (content) {
+				this.handlePageChange();
+			}
 		});
 
 		document.addEventListener('click', this.closeContextMenu);
@@ -1038,6 +1058,11 @@ const BookDetailComponent = {
 		if (this.touchTimer) {
 			clearTimeout(this.touchTimer);
 		}
+
+		if (this.$refs.contentRef) {
+			ScriptService.removeScripts(this.$refs.contentRef);
+		}
+		ScriptService.clearExecutedScripts();
 	}
 };
 

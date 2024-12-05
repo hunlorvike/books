@@ -153,107 +153,174 @@ const PAGES = [
 	// Trang 4: Câu hỏi trắc nghiệm
 	{
 		title: 'Câu hỏi trắc nghiệm',
-		content:
-			`<div class="flex-grow p-4 sm:p-6 max-w-md sm:max-w-[1400px] mx-auto space-y-8">
-            <h2 class="text-[1.25em] sm:text-[1.5em] font-semibold text-center">Câu hỏi ôn tập</h2>
-            
-            <!-- Câu hỏi 1 -->
-            <div class="mt-4">
-                <p class="text-[1em] sm:text-[1.125em] font-medium">
-                    1. Huế từng là kinh đô của triều đại nào sau đây?
-                </p>
-                <form class="mt-2 space-y-2">
-                    <label class="block">
-                        <input type="radio" name="question1" value="Tây Sơn" />
-                        Tây Sơn
-                    </label>
-                    <label class="block">
-                        <input type="radio" name="question1" value="Nguyễn" />
-                        Nguyễn
-                    </label>
-                    <label class="block">
-                        <input type="radio" name="question1" value="Lý" />
-                        Lý
-                    </label>
-                </form>
-            </div>
-            
-            <!-- Câu hỏi 2 -->
-            <div class="mt-4">
-                <p class="text-[1em] sm:text-[1.125em] font-medium">
-                    2. Tên của loại hình âm nhạc cung đình đặc trưng của Huế là gì?
-                </p>
-                <form class="mt-2 space-y-2">
-                    <label class="block">
-                        <input type="radio" name="question2" value="Nhã nhạc" />
-                        Nhã nhạc
-                    </label>
-                    <label class="block">
-                        <input type="radio" name="question2" value="Ca trù" />
-                        Ca trù
-                    </label>
-                    <label class="block">
-                        <input type="radio" name="question2" value="Hát chèo" />
-                        Hát chèo
-                    </label>
-                </form>
-            </div>
-            
-            <!-- Câu hỏi 3 -->
-            <div class="mt-4">
-                <p class="text-[1em] sm:text-[1.125em] font-medium">
-                    3. Ai chịu trách nhiệm xuất bản cuốn sách điện tử này?
-                </p>
-                <form class="mt-2 space-y-2">
-                    <label class="block">
-                        <input type="radio" name="question3" value="Nguyễn Văn Đủ" />
-                        Nguyễn Văn Đủ
-                    </label>
-                    <label class="block">
-                        <input type="radio" name="question3" value="Nguyễn Bảo Kỳ" />
-                        Nguyễn Bảo Kỳ
-                    </label>
-                    <label class="block">
-                        <input type="radio" name="question3" value="Phan Tiến Dũng" />
-                        Phan Tiến Dũng
-                    </label>
-                </form>
-            </div>
-        </div>`
+		content: `
+			<div class="flex-grow p-4 sm:p-6 max-w-md sm:max-w-[1400px] mx-auto space-y-8">
+				<h2 class="text-[1.25em] sm:text-[1.5em] font-semibold text-center">Câu hỏi ôn tập</h2>
+	
+				<!-- Câu hỏi 1 -->
+				<div class="mt-4">
+					<p class="text-[1em] sm:text-[1.125em] font-medium">
+						1. Huế từng là kinh đô của triều đại nào sau đây?
+					</p>
+					<form class="mt-2 space-y-2 question1">
+						<label class="block">
+							<input type="radio" name="question1" value="Tây Sơn" />
+							Tây Sơn
+						</label>
+						<label class="block">
+							<input type="radio" name="question1" value="Nguyễn" />
+							Nguyễn
+						</label>
+						<label class="block">
+							<input type="radio" name="question1" value="Lý" />
+							Lý
+						</label>
+					</form>
+				</div>
+	
+				<!-- Câu hỏi 2 -->
+				<div class="mt-4">
+					<p class="text-[1em] sm:text-[1.125em] font-medium">
+						2. Tên của loại hình âm nhạc cung đình đặc trưng của Huế là gì?
+					</p>
+					<form class="mt-2 space-y-2 question2">
+						<label class="block">
+							<input type="radio" name="question2" value="Nhã nhạc" />
+							Nhã nhạc
+						</label>
+						<label class="block">
+							<input type="radio" name="question2" value="Ca trù" />
+							Ca trù
+						</label>
+						<label class="block">
+							<input type="radio" name="question2" value="Hát chèo" />
+							Hát chèo
+						</label>
+					</form>
+				</div>
+	
+				<!-- Câu hỏi 3 -->
+				<div class="mt-4">
+					<p class="text-[1em] sm:text-[1.125em] font-medium">
+						3. Ai chịu trách nhiệm xuất bản cuốn sách điện tử này?
+					</p>
+					<form class="mt-2 space-y-2 question3">
+						<label class="block">
+							<input type="radio" name="question3" value="Nguyễn Văn Đủ" />
+							Nguyễn Văn Đủ
+						</label>
+						<label class="block">
+							<input type="radio" name="question3" value="Nguyễn Bảo Kỳ" />
+							Nguyễn Bảo Kỳ
+						</label>
+						<label class="block">
+							<input type="radio" name="question3" value="Phan Tiến Dũng" />
+							Phan Tiến Dũng
+						</label>
+					</form>
+				</div>
+	
+				<!-- Nút Submit -->
+				<div class="mt-6">
+					<button id="submitQuiz" class="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600">
+						Submit
+					</button>
+				</div>
+	
+				<!-- Kết quả -->
+				<div id="quizResult" class="mt-4 space-y-4 hidden">
+					<!-- Nội dung kết quả sẽ được chèn vào đây -->
+				</div>
+			</div>
+	
+			<script>
+				// Use a unique namespace for variables
+				window.quiz = window.quiz || {};
+				
+				// Reset previous state if exists
+				if (window.quiz.cleanup) {
+				window.quiz.cleanup();
+				}
+				
+				// Store variables in namespace
+				window.quiz.correctAnswers = {
+				question1: "Nguyễn",
+				question2: "Nhã nhạc",
+				question3: "Nguyễn Văn Đủ"
+				};
+
+				// Cleanup function
+				window.quiz.cleanup = function() {
+				if (window.quiz.submitHandler) {
+					document.getElementById("submitQuiz")?.removeEventListener("click", window.quiz.submitHandler);
+				}
+				};
+
+				// Submit handler
+				window.quiz.submitHandler = function() {
+				const resultContainer = document.getElementById("quizResult");
+				resultContainer.innerHTML = "";
+				resultContainer.classList.remove("hidden");
+
+				Object.keys(window.quiz.correctAnswers).forEach((question, index) => {
+					const selectedOption = document.querySelector(\`form.\${question} input[name="\${question}"]:checked\`);
+					const isCorrect = selectedOption && selectedOption.value === window.quiz.correctAnswers[question];
+
+					const result = document.createElement("p");
+					result.className = isCorrect
+					? "text-green-500 font-medium"
+					: "text-red-500 font-medium";
+					result.textContent = isCorrect
+					? \`Câu \${index + 1}: Đúng!\`
+					: \`Câu \${index + 1}: Sai. Đáp án đúng là "\${window.quiz.correctAnswers[question]}".\`;
+
+					document.querySelectorAll(\`form.\${question} label\`).forEach((label) => {
+					if (label.textContent.trim() === window.quiz.correctAnswers[question]) {
+						label.classList.add("text-blue-500");
+					}
+					});
+
+					resultContainer.appendChild(result);
+				});
+				};
+
+				// Add event listener
+				document.getElementById("submitQuiz")?.addEventListener("click", window.quiz.submitHandler);
+			</script>`
 	},
 
 	// Trang 5: Slider ảnh
 	{
 		title: 'Slider ảnh với Swiper.js',
 		content: `
-<div class="flex-grow p-4 sm:p-6 max-w-md sm:max-w-[1400px] mx-auto space-y-8">
-    <div class="mx-auto max-w-full sm:max-w-3xl lg:max-w-5xl xl:max-w-6xl">
-        <div class="swiper-container rounded-lg overflow-hidden shadow-lg bg-gray-50">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide">
-                    <div class="h-32 sm:h-40 md:h-48 lg:h-60">
-                        <img src="./public/images/gallery/anh1.jpg" alt="Image 1" class="object-cover w-full h-full">
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="h-32 sm:h-40 md:h-48 lg:h-60">
-                        <img src="./public/images/gallery/anh2.jpg" alt="Image 2" class="object-cover w-full h-full">
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="h-32 sm:h-40 md:h-48 lg:h-60">
-                        <img src="./public/images/gallery/anh3.jpg" alt="Image 3" class="object-cover w-full h-full">
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="h-32 sm:h-40 md:h-48 lg:h-60">
-                        <img src="./public/images/gallery/anh4.jpg" alt="Image 4" class="object-cover w-full h-full">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>`
+			<div class="flex-grow p-4 sm:p-6 max-w-md sm:max-w-[1400px] mx-auto space-y-8">
+				<div class="mx-auto max-w-full sm:max-w-3xl lg:max-w-5xl xl:max-w-6xl">
+					<div class="swiper-container rounded-lg overflow-hidden shadow-lg bg-gray-50">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide">
+								<div class="h-32 sm:h-40 md:h-48 lg:h-60">
+									<img src="./public/images/gallery/anh1.jpg" alt="Image 1" class="object-cover w-full h-full">
+								</div>
+							</div>
+							<div class="swiper-slide">
+								<div class="h-32 sm:h-40 md:h-48 lg:h-60">
+									<img src="./public/images/gallery/anh2.jpg" alt="Image 2" class="object-cover w-full h-full">
+								</div>
+							</div>
+							<div class="swiper-slide">
+								<div class="h-32 sm:h-40 md:h-48 lg:h-60">
+									<img src="./public/images/gallery/anh3.jpg" alt="Image 3" class="object-cover w-full h-full">
+								</div>
+							</div>
+							<div class="swiper-slide">
+								<div class="h-32 sm:h-40 md:h-48 lg:h-60">
+									<img src="./public/images/gallery/anh4.jpg" alt="Image 4" class="object-cover w-full h-full">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>`
 	},
 
 	// Trang cuối: Nội dung chờ
